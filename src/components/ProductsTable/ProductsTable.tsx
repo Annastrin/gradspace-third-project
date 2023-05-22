@@ -4,16 +4,13 @@ import Table from "@mui/material/Table"
 import TableBody from "@mui/material/TableBody"
 import TableCell from "@mui/material/TableCell"
 import TableContainer from "@mui/material/TableContainer"
-import TableHead from "@mui/material/TableHead"
 import TablePagination from "@mui/material/TablePagination"
 import TableRow from "@mui/material/TableRow"
-import TableSortLabel from "@mui/material/TableSortLabel"
-import Typography from "@mui/material/Typography"
 import Paper from "@mui/material/Paper"
-import IconButton from "@mui/material/IconButton"
-import DeleteIcon from "@mui/icons-material/Delete"
-import { visuallyHidden } from "@mui/utils"
 import { GetProductsResponse } from "../../types"
+import { Data, SortableData, Order } from "./tableTypes"
+import { EnhancedTableHead } from "./TableHead"
+import { TableActions } from "./TableActions"
 import { ProductImage } from "./ProductImage"
 import { ProductActions } from "./ProductActions"
 
@@ -69,6 +66,7 @@ export const ProductsTable = ({ data }: ProductsTableProps) => {
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", maxWidth: 1200, margin: "0 auto", mb: 2 }}>
+        <TableActions />
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -119,22 +117,6 @@ export const ProductsTable = ({ data }: ProductsTableProps) => {
   )
 }
 
-interface Data {
-  id: number
-  title: string
-  description: string
-  price: string
-  image: JSX.Element
-  actions: JSX.Element
-}
-
-interface SortableData {
-  id: number
-  title: string
-  description: string
-  price: string
-}
-
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
     return -1
@@ -144,8 +126,6 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   }
   return 0
 }
-
-type Order = "asc" | "desc"
 
 function getComparator<Key extends keyof any>(
   order: Order,
@@ -172,93 +152,4 @@ function stableSort<T>(
     return a[1] - b[1]
   })
   return stabilizedThis.map((el) => el[0])
-}
-
-interface SortableHeadCell {
-  id: keyof SortableData
-  label: string
-  numeric: boolean
-}
-
-const sortableHeadCell: readonly SortableHeadCell[] = [
-  {
-    id: "title",
-    numeric: false,
-    label: "Title",
-  },
-  {
-    id: "description",
-    numeric: false,
-    label: "Description",
-  },
-  {
-    id: "price",
-    numeric: true,
-    label: "Price",
-  },
-]
-
-interface NotSortableHeadCells {
-  id: "image" | "actions"
-  label: string
-}
-
-const notSortableHeadCells: readonly NotSortableHeadCells[] = [
-  {
-    id: "image",
-    label: "Image",
-  },
-  {
-    id: "actions",
-    label: "Actions",
-  },
-]
-
-interface EnhancedTableProps {
-  onRequestSort: (
-    event: React.MouseEvent<unknown>,
-    property: keyof SortableData
-  ) => void
-  order: Order
-  orderBy: string
-  rowCount: number
-}
-
-function EnhancedTableHead(props: EnhancedTableProps) {
-  const { order, orderBy, rowCount, onRequestSort } = props
-  const createSortHandler =
-    (property: keyof SortableData) => (event: React.MouseEvent<unknown>) => {
-      onRequestSort(event, property)
-    }
-
-  return (
-    <TableHead>
-      <TableRow>
-        {sortableHeadCell.map((headCell) => (
-          <TableCell
-            key={headCell.id}
-            align={"center"}
-            padding={"normal"}
-            sortDirection={orderBy === headCell.id ? order : false}>
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : "asc"}
-              onClick={createSortHandler(headCell.id)}>
-              {headCell.label}
-              {orderBy === headCell.id ? (
-                <Box component='span' sx={visuallyHidden}>
-                  {order === "desc" ? "sorted descending" : "sorted ascending"}
-                </Box>
-              ) : null}
-            </TableSortLabel>
-          </TableCell>
-        ))}
-        {notSortableHeadCells.map((headCell) => (
-          <TableCell key={headCell.id} align={"center"} padding={"normal"}>
-            {headCell.label}
-          </TableCell>
-        ))}
-      </TableRow>
-    </TableHead>
-  )
 }
