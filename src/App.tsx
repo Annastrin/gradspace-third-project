@@ -17,7 +17,6 @@ const App = () => {
         const { data } = await axios.get<GetProductsResponse>(
           `https://app.spiritx.co.nz/api/products`
         )
-        console.log(data)
         setData(data)
         setError(null)
       } catch (err) {
