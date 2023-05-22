@@ -15,6 +15,7 @@ import DeleteIcon from "@mui/icons-material/Delete"
 import { visuallyHidden } from "@mui/utils"
 import { GetProductsResponse } from "../../types"
 import { ProductImage } from "./ProductImage"
+import { ProductActions } from "./ProductActions"
 
 interface ProductsTableProps {
   data: GetProductsResponse
@@ -57,7 +58,7 @@ export const ProductsTable = ({ data }: ProductsTableProps) => {
       description: product.description,
       price: product.price,
       image: <ProductImage src={product.product_image} />,
-      actions: "",
+      actions: <ProductActions id={product.id} />,
     }))
     return stableSort<Data>(
       rows,
@@ -82,11 +83,7 @@ export const ProductsTable = ({ data }: ProductsTableProps) => {
             <TableBody>
               {visibleRows.map((row) => {
                 return (
-                  <TableRow
-                    hover
-                    tabIndex={-1}
-                    key={row.id}
-                    sx={{ cursor: "pointer" }}>
+                  <TableRow hover tabIndex={-1} key={row.id}>
                     <TableCell component='th' scope='row' align='center'>
                       {row.title}
                     </TableCell>
@@ -127,8 +124,8 @@ interface Data {
   title: string
   description: string
   price: string
-  image: JSX.Element // TODO
-  actions: string //TODO
+  image: JSX.Element
+  actions: JSX.Element
 }
 
 interface SortableData {
