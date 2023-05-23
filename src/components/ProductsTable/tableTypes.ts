@@ -3,7 +3,7 @@ export interface Data {
   title: string
   description: string
   price: string
-  image: JSX.Element
+  image?: JSX.Element
   actions: JSX.Element
 }
 

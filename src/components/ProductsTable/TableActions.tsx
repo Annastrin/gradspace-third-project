@@ -4,7 +4,7 @@ import AddCircleIcon from "@mui/icons-material/AddCircle"
 import FileDownloadIcon from "@mui/icons-material/FileDownload"
 import FileUploadIcon from "@mui/icons-material/FileUpload"
 
-export const TableActions = () => {
+const TableActions = () => {
   return (
     <Box aria-label='products table actions' mb={3}>
       <IconButton sx={{ marginX: "7px" }}>
@@ -19,3 +19,5 @@ export const TableActions = () => {
     </Box>
   )
 }
+
+export default TableActions

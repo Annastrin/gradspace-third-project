@@ -7,7 +7,7 @@ interface ProductActionsProps {
   id: number
 }
 
-export const ProductActions = ({ id }: ProductActionsProps) => {
+const ProductActions = ({ id }: ProductActionsProps) => {
   return (
     <Box aria-label='product actions'>
       <IconButton sx={{ marginX: "7px" }}>
@@ -19,3 +19,5 @@ export const ProductActions = ({ id }: ProductActionsProps) => {
     </Box>
   )
 }
+
+export default ProductActions

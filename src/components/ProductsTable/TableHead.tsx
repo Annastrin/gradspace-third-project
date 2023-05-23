@@ -3,49 +3,8 @@ import TableCell from "@mui/material/TableCell"
 import TableHead from "@mui/material/TableHead"
 import TableRow from "@mui/material/TableRow"
 import TableSortLabel from "@mui/material/TableSortLabel"
-import Typography from "@mui/material/Typography"
 import { visuallyHidden } from "@mui/utils"
 import { SortableData, Order } from "./tableTypes"
-
-interface SortableHeadCell {
-  id: keyof SortableData
-  label: string
-  numeric: boolean
-}
-
-const sortableHeadCell: readonly SortableHeadCell[] = [
-  {
-    id: "title",
-    numeric: false,
-    label: "Title",
-  },
-  {
-    id: "description",
-    numeric: false,
-    label: "Description",
-  },
-  {
-    id: "price",
-    numeric: true,
-    label: "Price",
-  },
-]
-
-interface NotSortableHeadCells {
-  id: "image" | "actions"
-  label: string
-}
-
-const notSortableHeadCells: readonly NotSortableHeadCells[] = [
-  {
-    id: "image",
-    label: "Image",
-  },
-  {
-    id: "actions",
-    label: "Actions",
-  },
-]
 
 interface EnhancedTableProps {
   onRequestSort: (
@@ -56,7 +15,8 @@ interface EnhancedTableProps {
   orderBy: string
   rowCount: number
 }
-export const EnhancedTableHead = (props: EnhancedTableProps) => {
+
+const EnhancedTableHead = (props: EnhancedTableProps) => {
   const { order, orderBy, rowCount, onRequestSort } = props
   const createSortHandler =
     (property: keyof SortableData) => (event: React.MouseEvent<unknown>) => {
@@ -99,3 +59,45 @@ export const EnhancedTableHead = (props: EnhancedTableProps) => {
     </TableHead>
   )
 }
+
+interface SortableHeadCell {
+  id: keyof SortableData
+  label: string
+  numeric: boolean
+}
+
+const sortableHeadCell: readonly SortableHeadCell[] = [
+  {
+    id: "title",
+    numeric: false,
+    label: "Title",
+  },
+  {
+    id: "description",
+    numeric: false,
+    label: "Description",
+  },
+  {
+    id: "price",
+    numeric: true,
+    label: "Price",
+  },
+]
+
+interface NotSortableHeadCells {
+  id: "image" | "actions"
+  label: string
+}
+
+const notSortableHeadCells: readonly NotSortableHeadCells[] = [
+  {
+    id: "image",
+    label: "Image",
+  },
+  {
+    id: "actions",
+    label: "Actions",
+  },
+]
+
+export default EnhancedTableHead

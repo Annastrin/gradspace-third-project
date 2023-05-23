@@ -9,20 +9,21 @@ import TableRow from "@mui/material/TableRow"
 import Paper from "@mui/material/Paper"
 import { GetProductsResponse } from "../../types"
 import { Data, SortableData, Order } from "./tableTypes"
-import { EnhancedTableHead } from "./TableHead"
-import { TableActions } from "./TableActions"
-import { ProductImage } from "./ProductImage"
-import { ProductActions } from "./ProductActions"
+import EnhancedTableHead from "./TableHead"
+import TableActions from "./TableActions"
+import ProductImage from "./ProductImage"
+import ProductActions from "./ProductActions"
 
 interface ProductsTableProps {
   data: GetProductsResponse
 }
 
-export const ProductsTable = ({ data }: ProductsTableProps) => {
+const ProductsTable = ({ data }: ProductsTableProps) => {
   const [order, setOrder] = useState<Order>("asc")
   const [orderBy, setOrderBy] = useState<keyof SortableData>("title")
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(5)
+  console.log(data)
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -64,9 +65,9 @@ export const ProductsTable = ({ data }: ProductsTableProps) => {
   }, [order, orderBy, page, rowsPerPage])
 
   return (
-    <Box sx={{ width: "100%" }}>
+    <Box sx={{ width: "100%", maxWidth: 1200, margin: "0 auto" }}>
+      <TableActions />
       <Paper sx={{ width: "100%", maxWidth: 1200, margin: "0 auto", mb: 2 }}>
-        <TableActions />
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -153,3 +154,5 @@ function stableSort<T>(
   })
   return stabilizedThis.map((el) => el[0])
 }
+
+export default ProductsTable
