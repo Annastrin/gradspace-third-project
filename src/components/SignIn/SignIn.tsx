@@ -32,6 +32,7 @@ const SignIn = ({
     control,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm({
     defaultValues: {
       email: "",
@@ -43,11 +44,17 @@ const SignIn = ({
     if (data.email && data.password) {
       console.log(data)
       signIn(data.email, data.password)
+      reset()
     }
   }
 
+  const closeAndReset = () => {
+    handleClose()
+    reset()
+  }
+
   return (
-    <Dialog open={open} onClose={handleClose}>
+    <Dialog open={open} onClose={closeAndReset}>
       {loginErrors && (
         <Alert severity='error' onClose={() => closeErrorsAlert()}>
           {`There is a problem with logging in - ${loginErrors}`}

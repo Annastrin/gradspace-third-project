@@ -15,6 +15,7 @@ const App = () => {
     null
   )
   const [loginError, setLoginError] = useState<string | null>(null)
+  const [loginToken, setLoginToken] = useState<string | null>(null)
   const [openSignIn, setOpenSignIn] = useState(false)
 
   useEffect(() => {
@@ -41,6 +42,27 @@ const App = () => {
     getData()
   }, [])
 
+  useEffect(() => {
+    const getLoginToken = () => {
+      const tokenItemData = localStorage.getItem("productTableAuth")
+      if (!tokenItemData) {
+        console.log("no saved token item")
+        setLoginToken(null)
+        return
+      }
+
+      const tokenItem = JSON.parse(tokenItemData)
+      const now = new Date()
+      console.log(tokenItem.token, now, tokenItem.expiryDate)
+      if (now > tokenItem.expiryDate) {
+        localStorage.removeItem("productTableAuth")
+        return
+      }
+      setLoginToken(tokenItem.token)
+    }
+    getLoginToken()
+  }, [])
+
   const handleOpenSignInDialog = () => {
     setOpenSignIn(true)
   }
@@ -52,12 +74,16 @@ const App = () => {
   const signIn = (email: string, password: string) => {
     const login = async () => {
       try {
-        const response = await axios.post(
+        const { data } = await axios.post(
           "https://app.spiritx.co.nz/api/login",
           { email, password }
         )
+        const token = data.token.token
         setLoginError(null)
-        console.log(response)
+        setLoginToken(token)
+        saveToLocalStorage(token)
+        setOpenSignIn(false)
+        console.log(data, token)
       } catch (err) {
         if (axios.isAxiosError(err)) {
           setLoginError(err.message)
@@ -71,7 +97,10 @@ const App = () => {
 
   return (
     <>
-      <Navbar handleSignInClick={handleOpenSignInDialog} />
+      <Navbar
+        handleSignInClick={handleOpenSignInDialog}
+        isLoggedIn={loginToken !== null}
+      />
       <Box
         justifyContent='center'
         mt={4}
@@ -95,6 +124,18 @@ const App = () => {
       />
     </>
   )
+}
+
+function saveToLocalStorage(token: string) {
+  const now = new Date()
+  const expiryDate = new Date()
+  expiryDate.setDate(now.getDate() + 10)
+
+  const item = {
+    token: token,
+    expiryDate: expiryDate,
+  }
+  localStorage.setItem("productTableAuth", JSON.stringify(item))
 }
 
 export default App
