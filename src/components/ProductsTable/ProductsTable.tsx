@@ -54,7 +54,7 @@ const ProductsTable = ({ data }: ProductsTableProps) => {
       id: product.id,
       title: product.title,
       description: product.description,
-      price: product.price,
+      price: parseFloat(product.price),
       image: <ProductImage src={product.product_image} />,
       actions: <ProductActions id={product.id} />,
     }))
@@ -83,11 +83,11 @@ const ProductsTable = ({ data }: ProductsTableProps) => {
               {visibleRows.map((row) => {
                 return (
                   <TableRow hover tabIndex={-1} key={row.id}>
-                    <TableCell component='th' scope='row' align='center'>
+                    <TableCell component='td' scope='row' align='center'>
                       {row.title}
                     </TableCell>
                     <TableCell align='center'>{row.description}</TableCell>
-                    <TableCell align='center'>{row.price}</TableCell>
+                    <TableCell align='center'>{row.price.toFixed(2)}</TableCell>
                     <TableCell align='center'>{row.image}</TableCell>
                     <TableCell align='center'>{row.actions}</TableCell>
                   </TableRow>
