@@ -13,16 +13,24 @@ import EnhancedTableHead from "./TableHead"
 import TableActions from "./TableActions"
 import ProductImage from "./ProductImage"
 import ProductActions from "./ProductActions"
+import NewProductRow from "./NewProductRow"
 
 interface ProductsTableProps {
   data: GetProductsResponse
+  isLoggedIn: boolean
+  handleSignIn: () => void
 }
 
-const ProductsTable = ({ data }: ProductsTableProps) => {
+const ProductsTable = ({
+  data,
+  isLoggedIn,
+  handleSignIn,
+}: ProductsTableProps) => {
   const [order, setOrder] = useState<Order>("asc")
   const [orderBy, setOrderBy] = useState<keyof SortableData>("title")
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(5)
+  const [isAddingNewProduct, setAddingNewProduct] = useState(false)
   console.log(data)
 
   const handleRequestSort = (
@@ -43,6 +51,14 @@ const ProductsTable = ({ data }: ProductsTableProps) => {
   ) => {
     setRowsPerPage(parseInt(event.target.value, 10))
     setPage(0)
+  }
+
+  const handleAddNewProduct = () => {
+    setAddingNewProduct(true)
+  }
+
+  const handleCancelAddingNewProduct = () => {
+    setAddingNewProduct(false)
   }
 
   // Avoid a layout jump when reaching the last page with empty rows.
@@ -66,7 +82,11 @@ const ProductsTable = ({ data }: ProductsTableProps) => {
 
   return (
     <Box sx={{ width: "100%", maxWidth: 1200, margin: "0 auto" }}>
-      <TableActions />
+      <TableActions
+        isLoggedIn={isLoggedIn}
+        handleSignIn={handleSignIn}
+        handleAddNewProduct={handleAddNewProduct}
+      />
       <Paper sx={{ width: "100%", maxWidth: 1200, margin: "0 auto", mb: 2 }}>
         <TableContainer>
           <Table
@@ -80,10 +100,13 @@ const ProductsTable = ({ data }: ProductsTableProps) => {
               rowCount={data.length}
             />
             <TableBody>
+              {isAddingNewProduct && (
+                <NewProductRow cancel={handleCancelAddingNewProduct} />
+              )}
               {visibleRows.map((row) => {
                 return (
                   <TableRow hover tabIndex={-1} key={row.id}>
-                    <TableCell component='td' scope='row' align='center'>
+                    <TableCell scope='row' align='center'>
                       {row.title}
                     </TableCell>
                     <TableCell align='center'>{row.description}</TableCell>

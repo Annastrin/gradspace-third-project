@@ -16,6 +16,7 @@ const App = () => {
   )
   const [loginError, setLoginError] = useState<string | null>(null)
   const [loginToken, setLoginToken] = useState<string | null>(null)
+  const [isLoggedIn, setLoggedIn] = useState(false)
   const [openSignIn, setOpenSignIn] = useState(false)
 
   useEffect(() => {
@@ -59,6 +60,7 @@ const App = () => {
         return
       }
       setLoginToken(tokenItem.token)
+      setLoggedIn(true)
     }
     getLoginToken()
   }, [])
@@ -82,6 +84,7 @@ const App = () => {
         setLoginError(null)
         setLoginToken(token)
         saveToLocalStorage(token)
+        setLoggedIn(true)
         setOpenSignIn(false)
         console.log(data, token)
       } catch (err) {
@@ -99,12 +102,15 @@ const App = () => {
     <>
       <Navbar
         handleSignInClick={handleOpenSignInDialog}
-        isLoggedIn={loginToken !== null}
+        isLoggedIn={isLoggedIn}
       />
       <Box
-        justifyContent='center'
         mt={4}
-        sx={{ paddingX: { xs: "16px", sm: "24px" } }}>
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          paddingX: { xs: "16px", sm: "24px" },
+        }}>
         {loading && <CircularProgress />}
         {fetchProductsError && (
           <Alert severity='error' onClose={() => setFetchProductsError(null)}>
@@ -112,7 +118,15 @@ const App = () => {
           </Alert>
         )}
         {useMemo(() => {
-          return data && <ProductsTable data={data} />
+          return (
+            data && (
+              <ProductsTable
+                data={data}
+                isLoggedIn={isLoggedIn}
+                handleSignIn={handleOpenSignInDialog}
+              />
+            )
+          )
         }, [data])}
       </Box>
       <SignIn
