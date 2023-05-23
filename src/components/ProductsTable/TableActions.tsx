@@ -7,13 +7,13 @@ import FileUploadIcon from "@mui/icons-material/FileUpload"
 const TableActions = () => {
   return (
     <Box aria-label='products table actions' mb={3}>
-      <IconButton sx={{ marginX: "7px" }}>
+      <IconButton sx={{ marginRight: "7px" }}>
         <AddCircleIcon color='primary' sx={{ fontSize: "2.2rem" }} />
       </IconButton>
       <IconButton sx={{ marginX: "7px" }}>
         <FileDownloadIcon color='primary' sx={{ fontSize: "2.2rem" }} />
       </IconButton>
-      <IconButton sx={{ marginX: "7px" }}>
+      <IconButton sx={{ marginLeft: "7px" }}>
         <FileUploadIcon color='primary' sx={{ fontSize: "2.2rem" }} />
       </IconButton>
     </Box>

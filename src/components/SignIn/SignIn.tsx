@@ -6,11 +6,14 @@ import DialogActions from "@mui/material/DialogActions"
 import DialogContent from "@mui/material/DialogContent"
 import DialogContentText from "@mui/material/DialogContentText"
 import DialogTitle from "@mui/material/DialogTitle"
+import Alert from "@mui/material/Alert"
 
 interface SignInProps {
   open: boolean
   handleClose: () => void
   signIn: (email: string, password: string) => void
+  loginErrors: string | null
+  closeErrorsAlert: () => void
 }
 
 interface FormInput {
@@ -18,7 +21,13 @@ interface FormInput {
   password: string
 }
 
-const SignIn = ({ open, handleClose, signIn }: SignInProps) => {
+const SignIn = ({
+  open,
+  handleClose,
+  signIn,
+  loginErrors,
+  closeErrorsAlert,
+}: SignInProps) => {
   const {
     control,
     handleSubmit,
@@ -39,6 +48,11 @@ const SignIn = ({ open, handleClose, signIn }: SignInProps) => {
 
   return (
     <Dialog open={open} onClose={handleClose}>
+      {loginErrors && (
+        <Alert severity='error' onClose={() => closeErrorsAlert()}>
+          {`There is a problem with logging in - ${loginErrors}`}
+        </Alert>
+      )}
       <DialogTitle>Sign In</DialogTitle>
       <DialogContent>
         <DialogContentText>
