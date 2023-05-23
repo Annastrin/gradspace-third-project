@@ -42,7 +42,6 @@ const SignIn = ({
 
   const onSubmit: SubmitHandler<FormInput> = (data) => {
     if (data.email && data.password) {
-      console.log(data)
       signIn(data.email, data.password)
       reset()
     }

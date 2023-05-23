@@ -16,14 +16,21 @@ interface NewProductRowProps {
 }
 
 const NewProductRow = ({ cancel }: NewProductRowProps) => {
-  const { control, handleSubmit, reset } = useForm({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({
     defaultValues: {
       productName: "",
       productDescription: "",
       productPrice: "",
       productImage: "",
     },
+    mode: "onChange",
   })
+  console.log(errors)
 
   const onSubmit: SubmitHandler<FormInput> = (data) => {
     console.log(data)
@@ -34,11 +41,21 @@ const NewProductRow = ({ cancel }: NewProductRowProps) => {
         <Controller
           name='productName'
           control={control}
+          rules={{
+            validate: {
+              required: (v) => v.length > 0 || "Title is required",
+            },
+          }}
           render={({ field }) => (
             <TextField
               {...field}
               variant='outlined'
-              sx={{ maxWidth: "150px" }}
+              placeholder='Blanket'
+              sx={{ maxWidth: "150px", marginTop: "20px" }}
+              error={errors.productName?.message ? true : undefined}
+              helperText={
+                errors.productName?.message ? errors.productName?.message : " "
+              }
             />
           )}
         />
@@ -51,7 +68,9 @@ const NewProductRow = ({ cancel }: NewProductRowProps) => {
             <TextField
               {...field}
               variant='outlined'
-              sx={{ maxWidth: "150px" }}
+              placeholder='Soft and warm'
+              sx={{ maxWidth: "150px", marginTop: "20px" }}
+              helperText=' '
             />
           )}
         />
@@ -60,11 +79,23 @@ const NewProductRow = ({ cancel }: NewProductRowProps) => {
         <Controller
           name='productPrice'
           control={control}
+          rules={{
+            validate: {
+              numeric: (v) => !isNaN(parseFloat(v)) || "Enter numbers",
+            },
+          }}
           render={({ field }) => (
             <TextField
               {...field}
               variant='outlined'
-              sx={{ maxWidth: "150px" }}
+              placeholder='999.99'
+              sx={{ maxWidth: "150px", marginTop: "20px" }}
+              error={errors.productPrice?.message ? true : undefined}
+              helperText={
+                errors.productPrice?.message
+                  ? errors.productPrice?.message
+                  : " "
+              }
             />
           )}
         />
