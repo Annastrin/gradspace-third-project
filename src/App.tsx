@@ -117,18 +117,15 @@ const App = () => {
             {`There is a problem fetching the products data - ${fetchProductsError}`}
           </Alert>
         )}
-        {useMemo(() => {
-          return (
-            data && (
-              <ProductsTable
-                data={data}
-                isLoggedIn={isLoggedIn}
-                loginToken={loginToken}
-                openSignInDialog={handleOpenSignInDialog}
-              />
-            )
-          )
-        }, [data])}
+
+        {data && (
+          <ProductsTable
+            data={data}
+            isLoggedIn={isLoggedIn}
+            loginToken={loginToken}
+            openSignInDialog={handleOpenSignInDialog}
+          />
+        )}
       </Box>
       <SignIn
         open={openSignIn}

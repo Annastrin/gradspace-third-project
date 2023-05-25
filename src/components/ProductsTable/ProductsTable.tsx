@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react"
+import React, { ComponentProps, useCallback, useMemo, useState } from "react"
 import axios from "axios"
 import Box from "@mui/material/Box"
 import Table from "@mui/material/Table"
@@ -45,20 +45,21 @@ const ProductsTable = ({
     [order, orderBy]
   )
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = useCallback((event: unknown, newPage: number) => {
     setPage(newPage)
-  }
+  }, [])
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10))
-    setPage(0)
-  }
+  const handleChangeRowsPerPage = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setRowsPerPage(parseInt(event.target.value, 10))
+      setPage(0)
+    },
+    []
+  )
 
-  const handleAddNewProductRow = () => {
+  const handleAddNewProductRow = useCallback(() => {
     setAddingNewProduct(true)
-  }
+  }, [])
 
   const handleCancelAddingNewProduct = () => {
     setAddingNewProduct(false)
@@ -182,9 +183,8 @@ const ProductsTable = ({
             </TableBody>
           </Table>
         </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component='div'
+        <TablePaginationMemo
+          rowsPerPageOptions={rowsPerPageOptions}
           count={data.length}
           rowsPerPage={rowsPerPage}
           page={page}
@@ -195,6 +195,14 @@ const ProductsTable = ({
     </Box>
   )
 }
+
+const rowsPerPageOptions = [5, 10, 25]
+
+const TablePaginationMemo = React.memo(
+  (props: ComponentProps<typeof TablePagination>) => (
+    <TablePagination component='div' {...props} />
+  )
+)
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
