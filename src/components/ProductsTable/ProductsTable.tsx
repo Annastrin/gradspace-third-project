@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
+import axios from "axios"
 import Box from "@mui/material/Box"
 import Table from "@mui/material/Table"
 import TableBody from "@mui/material/TableBody"
@@ -7,8 +8,8 @@ import TableContainer from "@mui/material/TableContainer"
 import TablePagination from "@mui/material/TablePagination"
 import TableRow from "@mui/material/TableRow"
 import Paper from "@mui/material/Paper"
-import { GetProductsResponse } from "../../types"
-import { Data, SortableData, Order } from "./tableTypes"
+import type { GetProductsResponse, NewProduct } from "../../types"
+import type { Data, SortableData, Order } from "./tableTypes"
 import EnhancedTableHead from "./TableHead"
 import TableActions from "./TableActions"
 import ProductImage from "./ProductImage"
@@ -18,13 +19,15 @@ import NewProductRow from "./NewProductRow"
 interface ProductsTableProps {
   data: GetProductsResponse
   isLoggedIn: boolean
-  handleSignIn: () => void
+  loginToken: string | null
+  openSignInDialog: () => void
 }
 
 const ProductsTable = ({
   data,
   isLoggedIn,
-  handleSignIn,
+  loginToken,
+  openSignInDialog,
 }: ProductsTableProps) => {
   const [order, setOrder] = useState<Order>("asc")
   const [orderBy, setOrderBy] = useState<keyof SortableData>("title")
@@ -33,14 +36,14 @@ const ProductsTable = ({
   const [isAddingNewProduct, setAddingNewProduct] = useState(false)
   console.log(data)
 
-  const handleRequestSort = (
-    event: React.MouseEvent<unknown>,
-    property: keyof SortableData
-  ) => {
-    const isAsc = orderBy === property && order === "asc"
-    setOrder(isAsc ? "desc" : "asc")
-    setOrderBy(property)
-  }
+  const handleRequestSort = useCallback(
+    (event: React.MouseEvent<unknown>, property: keyof SortableData) => {
+      const isAsc = orderBy === property && order === "asc"
+      setOrder(isAsc ? "desc" : "asc")
+      setOrderBy(property)
+    },
+    [order, orderBy]
+  )
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage)
@@ -53,12 +56,61 @@ const ProductsTable = ({
     setPage(0)
   }
 
-  const handleAddNewProduct = () => {
+  const handleAddNewProductRow = () => {
     setAddingNewProduct(true)
   }
 
   const handleCancelAddingNewProduct = () => {
     setAddingNewProduct(false)
+  }
+
+  const handleSubmitNewProduct = ({
+    title,
+    description,
+    price,
+    image,
+  }: NewProduct) => {
+    if (isLoggedIn) {
+      console.log("try to add a new product")
+      const newProductData = new FormData()
+      newProductData.append("title", title)
+      description && newProductData.append("description", description)
+      newProductData.append("price", price)
+      image && newProductData.append("product_image", image)
+      newProductData.append("price", price)
+      newProductData.append("category_id", "99")
+      newProductData.append("_method", "POST")
+      console.log(
+        newProductData.get("title"),
+        newProductData.get("description"),
+        newProductData.get("price"),
+        newProductData.get("product_image")
+      )
+
+      const addNewProduct = async () => {
+        try {
+          const { data } = await axios.post(
+            "https://app.spiritx.co.nz/api/products",
+            newProductData,
+            {
+              headers: {
+                token: loginToken,
+              },
+            }
+          )
+          console.log(data)
+        } catch (err) {
+          if (axios.isAxiosError(err)) {
+            console.log(err.message)
+          } else {
+            console.log("An unexpected error occurred on adding a new product")
+          }
+        }
+      }
+      addNewProduct()
+    } else {
+      openSignInDialog()
+    }
   }
 
   // Avoid a layout jump when reaching the last page with empty rows.
@@ -78,14 +130,14 @@ const ProductsTable = ({
       rows,
       getComparator<keyof SortableData>(order, orderBy)
     ).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-  }, [order, orderBy, page, rowsPerPage])
+  }, [order, orderBy, page, rowsPerPage, data])
 
   return (
     <Box sx={{ width: "100%", maxWidth: 1200, margin: "0 auto" }}>
       <TableActions
         isLoggedIn={isLoggedIn}
-        handleSignIn={handleSignIn}
-        handleAddNewProduct={handleAddNewProduct}
+        openSignInDialog={openSignInDialog}
+        handleAddNewProductRow={handleAddNewProductRow}
       />
       <Paper sx={{ width: "100%", maxWidth: 1200, margin: "0 auto", mb: 2 }}>
         <TableContainer>
@@ -101,7 +153,10 @@ const ProductsTable = ({
             />
             <TableBody>
               {isAddingNewProduct && (
-                <NewProductRow cancel={handleCancelAddingNewProduct} />
+                <NewProductRow
+                  cancel={handleCancelAddingNewProduct}
+                  submit={handleSubmitNewProduct}
+                />
               )}
               {visibleRows.map((row) => {
                 return (

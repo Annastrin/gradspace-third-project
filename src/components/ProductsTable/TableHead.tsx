@@ -5,6 +5,7 @@ import TableRow from "@mui/material/TableRow"
 import TableSortLabel from "@mui/material/TableSortLabel"
 import { visuallyHidden } from "@mui/utils"
 import { SortableData, Order } from "./tableTypes"
+import React from "react"
 
 interface EnhancedTableProps {
   onRequestSort: (
@@ -16,7 +17,7 @@ interface EnhancedTableProps {
   rowCount: number
 }
 
-const EnhancedTableHead = (props: EnhancedTableProps) => {
+const EnhancedTableHead = React.memo((props: EnhancedTableProps) => {
   const { order, orderBy, rowCount, onRequestSort } = props
   const createSortHandler =
     (property: keyof SortableData) => (event: React.MouseEvent<unknown>) => {
@@ -58,7 +59,7 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
       </TableRow>
     </TableHead>
   )
-}
+})
 
 interface SortableHeadCell {
   id: keyof SortableData

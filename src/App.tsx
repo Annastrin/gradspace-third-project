@@ -123,7 +123,8 @@ const App = () => {
               <ProductsTable
                 data={data}
                 isLoggedIn={isLoggedIn}
-                handleSignIn={handleOpenSignInDialog}
+                loginToken={loginToken}
+                openSignInDialog={handleOpenSignInDialog}
               />
             )
           )

@@ -12,3 +12,10 @@ type Product = {
 }
 
 export type GetProductsResponse = Product[]
+
+export type NewProduct = {
+  title: string
+  price: string
+  description?: string
+  image?: File
+}

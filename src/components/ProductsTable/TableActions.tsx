@@ -6,17 +6,17 @@ import FileUploadIcon from "@mui/icons-material/FileUpload"
 
 interface TableActionsProps {
   isLoggedIn: boolean
-  handleSignIn: () => void
-  handleAddNewProduct: () => void
+  openSignInDialog: () => void
+  handleAddNewProductRow: () => void
 }
 
 const TableActions = ({
   isLoggedIn,
-  handleSignIn,
-  handleAddNewProduct,
+  openSignInDialog,
+  handleAddNewProductRow: handleAddNewProduct,
 }: TableActionsProps) => {
   const handleAddNewProductClick = () => {
-    isLoggedIn ? handleAddNewProduct() : handleSignIn()
+    isLoggedIn ? handleAddNewProduct() : openSignInDialog()
   }
   return (
     <Box aria-label='products table actions' mb={3}>
