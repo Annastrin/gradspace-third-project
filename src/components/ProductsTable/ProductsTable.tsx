@@ -34,7 +34,6 @@ const ProductsTable = ({
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(5)
   const [isAddingNewProduct, setAddingNewProduct] = useState(false)
-  console.log(data)
 
   const handleRequestSort = useCallback(
     (event: React.MouseEvent<unknown>, property: keyof SortableData) => {
@@ -136,6 +135,8 @@ const ProductsTable = ({
   return (
     <Box sx={{ width: "100%", maxWidth: 1200, margin: "0 auto" }}>
       <TableActions
+        isAddingNewProduct={isAddingNewProduct}
+        cancelAddingNewProduct={handleCancelAddingNewProduct}
         isLoggedIn={isLoggedIn}
         openSignInDialog={openSignInDialog}
         handleAddNewProductRow={handleAddNewProductRow}
@@ -154,10 +155,7 @@ const ProductsTable = ({
             />
             <TableBody>
               {isAddingNewProduct && (
-                <NewProductRow
-                  cancel={handleCancelAddingNewProduct}
-                  submit={handleSubmitNewProduct}
-                />
+                <NewProductRow submit={handleSubmitNewProduct} />
               )}
               {visibleRows.map((row) => {
                 return (

@@ -2,10 +2,13 @@ import React from "react"
 import Box from "@mui/material/Box"
 import IconButton from "@mui/material/IconButton"
 import AddCircleIcon from "@mui/icons-material/AddCircle"
+import CancelIcon from "@mui/icons-material/Cancel"
 import FileDownloadIcon from "@mui/icons-material/FileDownload"
 import FileUploadIcon from "@mui/icons-material/FileUpload"
 
 interface TableActionsProps {
+  isAddingNewProduct: boolean
+  cancelAddingNewProduct: () => void
   isLoggedIn: boolean
   openSignInDialog: () => void
   handleAddNewProductRow: () => void
@@ -13,6 +16,8 @@ interface TableActionsProps {
 
 const TableActions = React.memo(
   ({
+    isAddingNewProduct,
+    cancelAddingNewProduct,
     isLoggedIn,
     openSignInDialog,
     handleAddNewProductRow: handleAddNewProduct,
@@ -22,11 +27,19 @@ const TableActions = React.memo(
     }
     return (
       <Box aria-label='products table actions' mb={3}>
-        <IconButton
-          sx={{ marginRight: "7px" }}
-          onClick={handleAddNewProductClick}>
-          <AddCircleIcon color='primary' sx={{ fontSize: "2.2rem" }} />
-        </IconButton>
+        {isAddingNewProduct ? (
+          <IconButton
+            sx={{ marginRight: "7px" }}
+            onClick={cancelAddingNewProduct}>
+            <CancelIcon color='primary' sx={{ fontSize: "2.2rem" }} />
+          </IconButton>
+        ) : (
+          <IconButton
+            sx={{ marginRight: "7px" }}
+            onClick={handleAddNewProductClick}>
+            <AddCircleIcon color='primary' sx={{ fontSize: "2.2rem" }} />
+          </IconButton>
+        )}
         <IconButton sx={{ marginX: "7px" }}>
           <FileDownloadIcon color='primary' sx={{ fontSize: "2.2rem" }} />
         </IconButton>

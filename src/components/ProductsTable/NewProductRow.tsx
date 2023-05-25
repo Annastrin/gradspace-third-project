@@ -15,14 +15,13 @@ import Button from "@mui/material/Button"
 import DoneIcon from "@mui/icons-material/Done"
 import ClearIcon from "@mui/icons-material/Clear"
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto"
-import { NewProduct } from "../../types"
+import type { NewProduct } from "../../types"
 
 interface NewProductRowProps {
-  cancel: () => void
   submit: ({ title, description, price, image }: NewProduct) => void
 }
 
-const NewProductRow = ({ cancel, submit }: NewProductRowProps) => {
+const NewProductRow = ({ submit }: NewProductRowProps) => {
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const {
     control,
@@ -173,10 +172,7 @@ const NewProductRow = ({ cancel, submit }: NewProductRowProps) => {
       <TableCell align='center'>
         <Box aria-label='add new product'>
           <IconButton sx={{ marginX: "7px" }} onClick={handleSubmit(onSubmit)}>
-            <DoneIcon color='primary' />
-          </IconButton>
-          <IconButton sx={{ marginX: "7px" }} onClick={cancel}>
-            <ClearIcon color='primary' />
+            <DoneIcon color='primary' fontSize='large' />
           </IconButton>
         </Box>
       </TableCell>
