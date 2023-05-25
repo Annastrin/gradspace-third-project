@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect } from "react"
 import axios from "axios"
 import CircularProgress from "@mui/material/CircularProgress"
 import Box from "@mui/material/Box"
@@ -7,6 +7,10 @@ import Navbar from "./components/Navbar/Navbar"
 import ProductsTable from "./components/ProductsTable/ProductsTable"
 import SignIn from "./components/SignIn/SignIn"
 import { GetProductsResponse } from "./types"
+import "@fontsource/roboto/300.css"
+import "@fontsource/roboto/400.css"
+import "@fontsource/roboto/500.css"
+import "@fontsource/roboto/700.css"
 
 const App = () => {
   const [data, setData] = useState<GetProductsResponse | null>(null)
