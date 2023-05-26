@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/gradspace-third-project/static/css/main.72008dfe.css",
-    "main.js": "/gradspace-third-project/static/js/main.1da4dddf.js",
+    "main.js": "/gradspace-third-project/static/js/main.8f5b5798.js",
     "static/js/787.84b43221.chunk.js": "/gradspace-third-project/static/js/787.84b43221.chunk.js",
     "static/media/roboto-all-500-normal.woff": "/gradspace-third-project/static/media/roboto-all-500-normal.0ab669b7a0d19b178f57.woff",
     "static/media/roboto-all-700-normal.woff": "/gradspace-third-project/static/media/roboto-all-700-normal.a457fde362a540fcadff.woff",
@@ -37,11 +37,11 @@
     "static/media/roboto-greek-ext-700-normal.woff2": "/gradspace-third-project/static/media/roboto-greek-ext-700-normal.bd9854c751441ccc1a70.woff2",
     "index.html": "/gradspace-third-project/index.html",
     "main.72008dfe.css.map": "/gradspace-third-project/static/css/main.72008dfe.css.map",
-    "main.1da4dddf.js.map": "/gradspace-third-project/static/js/main.1da4dddf.js.map",
+    "main.8f5b5798.js.map": "/gradspace-third-project/static/js/main.8f5b5798.js.map",
     "787.84b43221.chunk.js.map": "/gradspace-third-project/static/js/787.84b43221.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.72008dfe.css",
-    "static/js/main.1da4dddf.js"
+    "static/js/main.8f5b5798.js"
   ]
 }
