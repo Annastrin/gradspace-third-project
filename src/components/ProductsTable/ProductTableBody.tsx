@@ -18,6 +18,7 @@ import NewProductRow from "./NewProductRow"
 
 interface ProductTableBodyProps {
   products: GetProductsResponse
+  searchQuery: string
   addProductToProducts: (product: Product) => void
   isLoggedIn: boolean
   loginToken: string | null
@@ -27,6 +28,7 @@ interface ProductTableBodyProps {
 
 const ProductTableBody = ({
   products,
+  searchQuery,
   addProductToProducts,
   isLoggedIn,
   loginToken,
@@ -110,14 +112,24 @@ const ProductTableBody = ({
     }
   }
 
+  const productsToShow = products.filter((product) => {
+    if (!searchQuery) {
+      return true
+    }
+    return (
+      product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.description?.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  })
+
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - products.length) : 0
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - productsToShow.length) : 0
 
   const visibleRows = useMemo(() => {
-    const rows = products.map<Data>((product) => ({
+    const rows = productsToShow.map<Data>((product) => ({
       id: product.id,
       title: product.title,
-      description: product.description,
+      description: product.description ?? "",
       price: parseFloat(product.price),
       image: <ProductImage src={product.product_image} />,
       actions: <ProductActions id={product.id} />,
@@ -126,7 +138,7 @@ const ProductTableBody = ({
       rows,
       getComparator<keyof SortableData>(order, orderBy)
     ).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-  }, [order, orderBy, page, rowsPerPage, products])
+  }, [order, orderBy, page, rowsPerPage, productsToShow, searchQuery])
   return (
     <Paper sx={{ width: "100%", maxWidth: 1200, margin: "0 auto", mb: 2 }}>
       <TableContainer>
@@ -138,7 +150,7 @@ const ProductTableBody = ({
             order={order}
             orderBy={orderBy}
             onRequestSort={handleRequestSort}
-            rowCount={products.length}
+            rowCount={productsToShow.length}
           />
           <TableBody>
             {isAddingNewProduct && (
@@ -170,7 +182,7 @@ const ProductTableBody = ({
       </TableContainer>
       <TablePaginationMemo
         rowsPerPageOptions={rowsPerPageOptions}
-        count={products.length}
+        count={productsToShow.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}

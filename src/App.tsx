@@ -17,6 +17,7 @@ const App = () => {
   const [showLoginSuccess, setShowLoginSuccess] = useState(false)
   const [isLoggedIn, setLoggedIn] = useState(false)
   const [openSignIn, setOpenSignIn] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("")
 
   useEffect(() => {
     getLoginToken()
@@ -80,6 +81,8 @@ const App = () => {
       <Navbar
         handleSignInClick={handleOpenSignInDialog}
         isLoggedIn={isLoggedIn}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
       />
       <Box
         mt={4}
@@ -89,6 +92,7 @@ const App = () => {
           paddingX: { xs: "16px", sm: "24px" },
         }}>
         <ProductsTable
+          searchQuery={searchQuery}
           isLoggedIn={isLoggedIn}
           loginToken={loginToken}
           openSignInDialog={handleOpenSignInDialog}

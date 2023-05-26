@@ -2,7 +2,7 @@ export type Product = {
   id: number
   category_id: number
   title: string
-  description: string
+  description: string | null
   price: string
   product_image: string
   is_active: null

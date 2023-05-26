@@ -11,9 +11,16 @@ import Search from "./Search"
 interface NavbarProps {
   handleSignInClick: () => void
   isLoggedIn: boolean
+  searchQuery: string
+  setSearchQuery: React.Dispatch<React.SetStateAction<string>>
 }
 
-const Navbar = ({ handleSignInClick, isLoggedIn }: NavbarProps) => {
+const Navbar = ({
+  handleSignInClick,
+  isLoggedIn,
+  searchQuery,
+  setSearchQuery,
+}: NavbarProps) => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position='static'>
@@ -30,7 +37,7 @@ const Navbar = ({ handleSignInClick, isLoggedIn }: NavbarProps) => {
           <Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>
             Product Management
           </Typography>
-          <Search />
+          <Search searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
         </Toolbar>
       </AppBar>
     </Box>

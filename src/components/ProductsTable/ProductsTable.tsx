@@ -8,12 +8,14 @@ import ProductTableBody from "./ProductTableBody"
 import type { GetProductsResponse, Product } from "../../types"
 
 interface ProductsTableProps {
+  searchQuery: string
   isLoggedIn: boolean
   loginToken: string | null
   openSignInDialog: () => void
 }
 
 const ProductsTable = ({
+  searchQuery,
   isLoggedIn,
   loginToken,
   openSignInDialog,
@@ -91,6 +93,7 @@ const ProductsTable = ({
           />
           <ProductTableBody
             products={products}
+            searchQuery={searchQuery}
             addProductToProducts={addProductToProducts}
             isLoggedIn={isLoggedIn}
             loginToken={loginToken}

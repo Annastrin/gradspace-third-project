@@ -1,18 +1,40 @@
 import { styled, alpha } from "@mui/material/styles"
 import InputBase from "@mui/material/InputBase"
 import SearchIcon from "@mui/icons-material/Search"
+import { useState } from "react"
 
-const Search = () => {
+interface SearchProps {
+  searchQuery: string
+  setSearchQuery: React.Dispatch<React.SetStateAction<string>>
+}
+
+const Search = ({ searchQuery, setSearchQuery }: SearchProps) => {
+  const [searchState, setSearchState] = useState(searchQuery)
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setSearchQuery(searchState)
+  }
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setSearchState(e.target.value)
+    setSearchQuery(e.target.value)
+  }
   return (
-    <SearchWrapper>
-      <SearchIconWrapper>
-        <SearchIcon />
-      </SearchIconWrapper>
-      <StyledInputBase
-        placeholder='Search…'
-        inputProps={{ "aria-label": "search" }}
-      />
-    </SearchWrapper>
+    <form onSubmit={(e) => handleSubmit(e)}>
+      <SearchWrapper>
+        <SearchIconWrapper>
+          <SearchIcon />
+        </SearchIconWrapper>
+        <StyledInputBase
+          onChange={(e) => handleChange(e)}
+          value={searchState}
+          placeholder='Search…'
+          inputProps={{ "aria-label": "search" }}
+        />
+      </SearchWrapper>
+      <input type='submit' value='Search' hidden />
+    </form>
   )
 }
 
