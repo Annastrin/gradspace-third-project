@@ -1,73 +1,67 @@
 import { useState, useEffect } from "react"
 import axios from "axios"
-import CircularProgress from "@mui/material/CircularProgress"
 import Box from "@mui/material/Box"
+import Snackbar from "@mui/material/Snackbar"
 import Alert from "@mui/material/Alert"
 import Navbar from "./components/Navbar/Navbar"
 import ProductsTable from "./components/ProductsTable/ProductsTable"
 import SignIn from "./components/SignIn/SignIn"
-import { GetProductsResponse } from "./types"
 import "@fontsource/roboto/300.css"
 import "@fontsource/roboto/400.css"
 import "@fontsource/roboto/500.css"
 import "@fontsource/roboto/700.css"
 
 const App = () => {
-  const [data, setData] = useState<GetProductsResponse | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [fetchProductsError, setFetchProductsError] = useState<string | null>(
-    null
-  )
-  const [loginError, setLoginError] = useState<string | null>(null)
   const [loginToken, setLoginToken] = useState<string | null>(null)
+  const [loginError, setLoginError] = useState<string | null>(null)
+  const [showLoginSuccess, setShowLoginSuccess] = useState(false)
   const [isLoggedIn, setLoggedIn] = useState(false)
   const [openSignIn, setOpenSignIn] = useState(false)
 
   useEffect(() => {
-    const getData = async () => {
-      try {
-        const { data } = await axios.get<GetProductsResponse>(
-          "https://app.spiritx.co.nz/api/products"
-        )
-        setData(data)
-        setFetchProductsError(null)
-      } catch (err) {
-        setData(null)
-        if (axios.isAxiosError(err)) {
-          setFetchProductsError(err.message)
-        } else {
-          setFetchProductsError(
-            "An unexpected error occurred on fetching products"
-          )
-        }
-      } finally {
-        setLoading(false)
-      }
-    }
-    getData()
-  }, [])
-
-  useEffect(() => {
-    const getLoginToken = () => {
-      const tokenItemData = localStorage.getItem("productTableAuth")
-      if (!tokenItemData) {
-        console.log("no saved token item")
-        setLoginToken(null)
-        return
-      }
-
-      const tokenItem = JSON.parse(tokenItemData)
-      const now = new Date()
-      console.log(tokenItem.token, now, tokenItem.expiryDate)
-      if (now > tokenItem.expiryDate) {
-        localStorage.removeItem("productTableAuth")
-        return
-      }
-      setLoginToken(tokenItem.token)
-      setLoggedIn(true)
-    }
     getLoginToken()
   }, [])
+
+  const getLoginToken = () => {
+    const tokenItemData = localStorage.getItem("productTableAuth")
+    if (!tokenItemData) {
+      console.log("no saved token item")
+      setLoginToken(null)
+      return
+    }
+
+    const tokenItem = JSON.parse(tokenItemData)
+    const now = new Date()
+    console.log(tokenItem.token, now, tokenItem.expiryDate)
+    if (now > tokenItem.expiryDate) {
+      localStorage.removeItem("productTableAuth")
+      return
+    }
+    setLoginToken(tokenItem.token)
+    setLoggedIn(true)
+  }
+
+  const signIn = (email: string, password: string) => {
+    axios
+      .post("https://app.spiritx.co.nz/api/login", { email, password })
+      .then((res) => {
+        const token = res.data.token.token
+        setLoginError(null)
+        setLoginToken(token)
+        saveToLocalStorage(token)
+        setOpenSignIn(false)
+        setShowLoginSuccess(true)
+        setLoggedIn(true)
+        console.log(res.data, token)
+      })
+      .catch((err) => {
+        if (axios.isAxiosError(err)) {
+          setLoginError(err.message)
+        } else {
+          setLoginError("An unexpected error occurred on logging in")
+        }
+      })
+  }
 
   const handleOpenSignInDialog = () => {
     setOpenSignIn(true)
@@ -77,29 +71,8 @@ const App = () => {
     setOpenSignIn(false)
   }
 
-  const signIn = (email: string, password: string) => {
-    const login = async () => {
-      try {
-        const { data } = await axios.post(
-          "https://app.spiritx.co.nz/api/login",
-          { email, password }
-        )
-        const token = data.token.token
-        setLoginError(null)
-        setLoginToken(token)
-        saveToLocalStorage(token)
-        setLoggedIn(true)
-        setOpenSignIn(false)
-        console.log(data, token)
-      } catch (err) {
-        if (axios.isAxiosError(err)) {
-          setLoginError(err.message)
-        } else {
-          setLoginError("An unexpected error occurred on logging in")
-        }
-      }
-    }
-    login()
+  const handleCloseLoginSuccess = () => {
+    setShowLoginSuccess(false)
   }
 
   return (
@@ -115,21 +88,11 @@ const App = () => {
           justifyContent: "center",
           paddingX: { xs: "16px", sm: "24px" },
         }}>
-        {loading && <CircularProgress />}
-        {fetchProductsError && (
-          <Alert severity='error' onClose={() => setFetchProductsError(null)}>
-            {`There is a problem fetching the products data - ${fetchProductsError}`}
-          </Alert>
-        )}
-
-        {data && (
-          <ProductsTable
-            data={data}
-            isLoggedIn={isLoggedIn}
-            loginToken={loginToken}
-            openSignInDialog={handleOpenSignInDialog}
-          />
-        )}
+        <ProductsTable
+          isLoggedIn={isLoggedIn}
+          loginToken={loginToken}
+          openSignInDialog={handleOpenSignInDialog}
+        />
       </Box>
       <SignIn
         open={openSignIn}
@@ -138,6 +101,19 @@ const App = () => {
         loginErrors={loginError}
         closeErrorsAlert={() => setLoginError(null)}
       />
+      <Snackbar
+        open={showLoginSuccess}
+        autoHideDuration={3000}
+        onClose={handleCloseLoginSuccess}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}>
+        <Alert
+          variant='filled'
+          onClose={handleCloseLoginSuccess}
+          severity='success'
+          sx={{ width: "100%" }}>
+          You're logged in!
+        </Alert>
+      </Snackbar>
     </>
   )
 }
