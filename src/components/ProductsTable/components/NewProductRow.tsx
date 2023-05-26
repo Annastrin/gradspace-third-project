@@ -15,7 +15,7 @@ import Button from "@mui/material/Button"
 import DoneIcon from "@mui/icons-material/Done"
 import ClearIcon from "@mui/icons-material/Clear"
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto"
-import type { NewProduct } from "../../types"
+import type { NewProduct } from "../../../types"
 
 interface NewProductRowProps {
   submit: ({ title, description, price, image }: NewProduct) => void

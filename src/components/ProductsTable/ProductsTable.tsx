@@ -3,8 +3,8 @@ import axios from "axios"
 import Box from "@mui/material/Box"
 import CircularProgress from "@mui/material/CircularProgress"
 import Alert from "@mui/material/Alert"
-import TableActions from "./TableActions"
-import ProductTableBody from "./ProductTableBody"
+import TableActions from "./components/TableActions"
+import ProductTableBody from "./components/ProductTableBody"
 import type { GetProductsResponse, Product } from "../../types"
 
 interface ProductsTableProps {
