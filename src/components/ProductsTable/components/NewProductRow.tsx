@@ -52,7 +52,9 @@ const NewProductRow = ({
       setValue("productDescription", initialValues.description)
       setValue("productPrice", initialValues.price)
       setValue("productImage", initialValues.image)
-      setImagePreview(initialValues.image)
+      setImagePreview(
+        `https://app.spiritx.co.nz/storage/${initialValues.image}`
+      )
     } else {
       reset()
       setImagePreview(null)
@@ -63,18 +65,33 @@ const NewProductRow = ({
     data
   ) => {
     const file = data.productImage ? data.productImage[0] : null
-    console.log(data, file, imagePreview)
-    const newProduct: NewProduct = {
-      title: data.productName,
-      price: parseFloat(data.productPrice).toFixed(2),
-      description: data.productDescription,
-      image: data.productImage,
-    }
+    console.log({ data, file, imagePreview })
+
     if (editMode) {
+      let newProduct = {} as NewProduct
+      if (data.productName !== initialValues?.title) {
+        newProduct.title = data.productName
+      }
+      if (data.productDescription !== initialValues?.description) {
+        newProduct.description = data.productDescription
+      }
+      if (data.productPrice !== initialValues?.price) {
+        newProduct.price = data.productPrice
+      }
+      if (data.productImage !== initialValues?.image) {
+        newProduct.image = data.productImage
+      }
       newProduct.id = initialValues?.id
+      console.log(newProduct)
       submitAddOrEdit({ action: "edit", product: newProduct })
       cancelAddOrEditProduct("edit")
     } else {
+      let newProduct: NewProduct = {
+        title: data.productName,
+        price: parseFloat(data.productPrice).toFixed(2),
+        description: data.productDescription,
+        image: data.productImage,
+      }
       submitAddOrEdit({ action: "add", product: newProduct })
       reset()
       setImagePreview(null)
@@ -177,16 +194,7 @@ const NewProductRow = ({
             justifyContent: "center",
             alignItems: "center",
           }}>
-          {imagePreview && (
-            <img
-              src={
-                editMode
-                  ? `https://app.spiritx.co.nz/storage/${imagePreview}`
-                  : imagePreview
-              }
-              width={50}
-            />
-          )}
+          {imagePreview && <img src={imagePreview} width={50} />}
           <Controller
             name='productImage'
             control={control}

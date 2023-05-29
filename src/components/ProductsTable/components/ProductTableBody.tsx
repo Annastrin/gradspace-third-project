@@ -58,11 +58,10 @@ const ProductTableBody = ({
   const [orderBy, setOrderBy] = useState<keyof SortableData>("title")
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(5)
-  const [showAddedSuccess, setShowAddedSuccess] = useState(false)
   const [rowToEdit, setRowToEdit] = useState<number | null>(null)
-  const [showEditedSuccess, setShowEditedSuccess] = useState(false)
   const [showConfirmDelete, setShowConfirmDelete] = useState(false)
   const [productToDelete, setProductToDelete] = useState({} as ProductToDelete)
+  const [showMessage, setShowMessage] = useState(false)
 
   useEffect(() => {
     setPage(0)
@@ -93,13 +92,18 @@ const ProductTableBody = ({
     ({ action, product }: AddOrEditProductProps) => {
       if (isLoggedIn) {
         const newProductData = new FormData()
-        newProductData.append("title", product.title)
+        if (action === "add") {
+          newProductData.append("title", product.title)
+          newProductData.append("price", product.price)
+          newProductData.append("category_id", "99")
+        } else {
+          product.title && newProductData.append("title", product.title)
+          product.price && newProductData.append("price", product.price)
+        }
         product.description &&
           newProductData.append("description", product.description)
-        newProductData.append("price", product.price)
         product.image && newProductData.append("product_image", product.image)
 
-        newProductData.append("category_id", "99")
         action === "add"
           ? newProductData.append("_method", "POST")
           : newProductData.append("_method", "PUT")
@@ -118,7 +122,7 @@ const ProductTableBody = ({
           .then((res) => {
             console.log(res.data)
             addProductToProducts(res.data)
-            setShowAddedSuccess(true)
+            setShowMessage(true)
           })
           .catch((err) => {
             if (axios.isAxiosError(err)) {
@@ -287,29 +291,15 @@ const ProductTableBody = ({
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
       <Snackbar
-        open={showAddedSuccess}
-        autoHideDuration={3000}
-        onClose={() => setShowAddedSuccess(false)}
+        open={showMessage}
+        onClose={() => setShowMessage(false)}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}>
         <Alert
           variant='filled'
-          onClose={() => setShowAddedSuccess(false)}
+          onClose={() => setShowMessage(false)}
           severity='success'
           sx={{ width: "100%" }}>
-          New product added!
-        </Alert>
-      </Snackbar>
-      <Snackbar
-        open={showEditedSuccess}
-        autoHideDuration={3000}
-        onClose={() => setShowEditedSuccess(false)}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}>
-        <Alert
-          variant='filled'
-          onClose={() => setShowEditedSuccess(false)}
-          severity='success'
-          sx={{ width: "100%" }}>
-          The product was updated!
+          The product was added or updated!
         </Alert>
       </Snackbar>
       <ConfirmDeleteDialog
