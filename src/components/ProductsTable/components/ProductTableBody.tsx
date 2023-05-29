@@ -35,11 +35,25 @@ const ProductTableBody = ({
   openSignInDialog,
   isAddingNewProduct,
 }: ProductTableBodyProps) => {
+  const [productsToShow, setProductsToShow] = useState(products)
   const [order, setOrder] = useState<Order>("asc")
   const [orderBy, setOrderBy] = useState<keyof SortableData>("title")
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(5)
   const [showAddedSuccess, setShowAddedSuccess] = useState(false)
+  useEffect(() => {
+    const filteredProducts = products.filter((product) => {
+      if (!searchQuery) {
+        return true
+      }
+      return (
+        product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.description?.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    })
+    setProductsToShow(filteredProducts)
+    setPage(0)
+  }, [searchQuery])
 
   const handleRequestSort = useCallback(
     (event: React.MouseEvent<unknown>, property: keyof SortableData) => {
@@ -47,19 +61,22 @@ const ProductTableBody = ({
       setOrder(isAsc ? "desc" : "asc")
       setOrderBy(property)
     },
-    [order, orderBy]
+    [order, orderBy, productsToShow, searchQuery]
   )
 
-  const handleChangePage = useCallback((event: unknown, newPage: number) => {
+  const handleChangePage = useCallback(
+    (event: unknown, newPage: number) => {
     setPage(newPage)
-  }, [])
+    },
+    [productsToShow, searchQuery]
+  )
 
   const handleChangeRowsPerPage = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setRowsPerPage(parseInt(event.target.value, 10))
       setPage(0)
     },
-    []
+    [productsToShow, searchQuery]
   )
 
   const handleCloseAddedSuccess = () => {
@@ -125,6 +142,9 @@ const ProductTableBody = ({
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - productsToShow.length) : 0
 
+  const pageCount = Math.ceil(productsToShow.length / rowsPerPage)
+  const validPage = page < pageCount ? page : Math.max(0, pageCount - 1)
+
   const visibleRows = useMemo(() => {
     const rows = productsToShow.map<Data>((product) => ({
       id: product.id,
@@ -137,8 +157,8 @@ const ProductTableBody = ({
     return stableSort<Data>(
       rows,
       getComparator<keyof SortableData>(order, orderBy)
-    ).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-  }, [order, orderBy, page, rowsPerPage, productsToShow, searchQuery])
+    ).slice(validPage * rowsPerPage, validPage * rowsPerPage + rowsPerPage)
+  }, [order, orderBy, validPage, rowsPerPage, productsToShow, searchQuery])
   return (
     <Paper sx={{ width: "100%", maxWidth: 1200, margin: "0 auto", mb: 2 }}>
       <TableContainer>
