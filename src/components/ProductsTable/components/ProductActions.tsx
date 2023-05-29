@@ -5,12 +5,16 @@ import DeleteIcon from "@mui/icons-material/Delete"
 
 interface ProductActionsProps {
   id: number
+  setRowToEdit: React.Dispatch<React.SetStateAction<number | null>>
 }
 
-const ProductActions = ({ id }: ProductActionsProps) => {
+const ProductActions = ({ id, setRowToEdit }: ProductActionsProps) => {
+  const handleEdit = () => {
+    setRowToEdit(id)
+  }
   return (
     <Box aria-label='product actions'>
-      <IconButton sx={{ marginX: "7px" }}>
+      <IconButton sx={{ marginX: "7px" }} onClick={handleEdit}>
         <EditIcon color='primary' />
       </IconButton>
       <IconButton sx={{ marginX: "7px" }}>

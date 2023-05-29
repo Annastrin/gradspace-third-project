@@ -5,7 +5,7 @@ import CircularProgress from "@mui/material/CircularProgress"
 import Alert from "@mui/material/Alert"
 import TableActions from "./components/TableActions"
 import ProductTableBody from "./components/ProductTableBody"
-import type { GetProductsResponse, Product } from "../../types"
+import type { GetProductsResponse, Product, Products } from "./tableTypes"
 
 interface ProductsTableProps {
   searchQuery: string
@@ -20,7 +20,7 @@ const ProductsTable = ({
   loginToken,
   openSignInDialog,
 }: ProductsTableProps) => {
-  const [products, setProducts] = useState<GetProductsResponse | null>(null)
+  const [products, setProducts] = useState<Products>({})
   const [loadingProducts, setLoadingProducts] = useState(true)
   const [productsError, setProductsError] = useState<string | null>(null)
   const [isAddingNewProduct, setAddingNewProduct] = useState(false)
@@ -33,11 +33,18 @@ const ProductsTable = ({
     axios
       .get<GetProductsResponse>("https://app.spiritx.co.nz/api/products")
       .then((res) => {
-        setProducts(res.data)
+        const productsObj = res.data.reduce((acc, product) => {
+          acc[product.id] = product
+          return acc
+        }, {} as Products)
+
+        console.log(res.data, productsObj)
+        setProducts(productsObj)
+
         setProductsError(null)
       })
       .catch((err) => {
-        setProducts(null)
+        setProducts({})
         if (axios.isAxiosError(err)) {
           setProductsError(err.message)
         } else {
@@ -50,22 +57,19 @@ const ProductsTable = ({
   }
 
   const addProductToProducts = (product: Product) => {
-    if (products) {
-      setProducts([...products, product])
-    } else {
-      setProducts([product])
-    }
+    setProducts((prev) => ({ ...prev, [product.id]: product }))
   }
 
   const handleAddNewProductRow = useCallback(() => {
     setAddingNewProduct(true)
   }, [])
 
-  const handleCancelAddingNewProduct = () => {
+  const handleCancelAddingNewProduct = useCallback(() => {
     setAddingNewProduct(false)
-  }
+  }, [])
 
   // Avoid a layout jump when reaching the last page with empty rows.
+  // const productsArr = Object.values(products)
 
   return (
     <Box
@@ -99,6 +103,7 @@ const ProductsTable = ({
             loginToken={loginToken}
             openSignInDialog={openSignInDialog}
             isAddingNewProduct={isAddingNewProduct}
+            cancelAddingNewProduct={handleCancelAddingNewProduct}
           />
         </Box>
       )}

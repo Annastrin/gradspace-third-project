@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
   useForm,
   Controller,
@@ -15,22 +15,49 @@ import Button from "@mui/material/Button"
 import DoneIcon from "@mui/icons-material/Done"
 import ClearIcon from "@mui/icons-material/Clear"
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto"
-import type { NewProduct } from "../../../types"
+import type {
+  NewProduct,
+  EditedProductInitialValues,
+  ProductAction,
+} from "../tableTypes"
 
 interface NewProductRowProps {
-  submit: ({ title, description, price, image }: NewProduct) => void
+  editMode?: boolean
+  initialValues?: EditedProductInitialValues
+  submitAdding: (newProduct: NewProduct) => void
+  submitEditing: (newProduct: NewProduct) => void
+  cancelAddOrEditProduct: (action: ProductAction) => void
 }
 
-const NewProductRow = ({ submit }: NewProductRowProps) => {
+const NewProductRow = ({
+  submitAdding,
+  submitEditing,
+  cancelAddOrEditProduct,
+  editMode = false,
+  initialValues,
+}: NewProductRowProps) => {
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const {
     control,
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
   } = useForm({
     mode: "onChange",
   })
+
+  useEffect(() => {
+    if (editMode && initialValues) {
+      setValue("productName", initialValues.title)
+      setValue("productDescription", initialValues.description)
+      setValue("productPrice", initialValues.price)
+      setImagePreview(initialValues.image)
+    } else {
+      reset()
+      setImagePreview(null)
+    }
+  }, [editMode, initialValues, reset, setValue])
 
   const onSubmit: SubmitHandler<FormInput> & SubmitHandler<FieldValues> = (
     data
@@ -43,9 +70,18 @@ const NewProductRow = ({ submit }: NewProductRowProps) => {
       description: data.productDescription,
       image: data.productImage,
     }
-    submit(newProduct)
+    submitAdding(newProduct)
     reset()
     setImagePreview(null)
+  }
+
+  const onCancel = () => {
+    if (editMode) {
+      cancelAddOrEditProduct("edit")
+    } else {
+      cancelAddOrEditProduct("add")
+      reset()
+    }
   }
 
   const getImagePreviewUrl = (file: File | null) => {
@@ -109,8 +145,7 @@ const NewProductRow = ({ submit }: NewProductRowProps) => {
           rules={{
             validate: {
               numeric: (v) =>
-                (!isNaN(parseFloat(v)) && parseFloat(v) > 0) ||
-                "Enter valid price",
+                /^\d+(?:\.\d{1,2})?$/.test(v) || "Enter valid price",
             },
           }}
           render={({ field }) => (
@@ -136,7 +171,16 @@ const NewProductRow = ({ submit }: NewProductRowProps) => {
             justifyContent: "center",
             alignItems: "center",
           }}>
-          {imagePreview && <img src={imagePreview} width={50} />}
+          {imagePreview && (
+            <img
+              src={
+                editMode
+                  ? `https://app.spiritx.co.nz/storage/${imagePreview}`
+                  : imagePreview
+              }
+              width={50}
+            />
+          )}
           <Controller
             name='productImage'
             control={control}
@@ -171,8 +215,17 @@ const NewProductRow = ({ submit }: NewProductRowProps) => {
       </TableCell>
       <TableCell align='center'>
         <Box aria-label='add new product'>
-          <IconButton sx={{ marginX: "7px" }} onClick={handleSubmit(onSubmit)}>
+          <IconButton
+            sx={{
+              marginX: "7px",
+              opacity: Object.keys(errors).length > 0 ? "0.5" : "1",
+            }}
+            onClick={handleSubmit(onSubmit)}
+            disabled={Object.keys(errors).length > 0 ? true : false}>
             <DoneIcon color='primary' fontSize='large' />
+          </IconButton>
+          <IconButton sx={{ marginX: "7px" }} onClick={onCancel}>
+            <ClearIcon color='primary' fontSize='large' />
           </IconButton>
         </Box>
       </TableCell>
