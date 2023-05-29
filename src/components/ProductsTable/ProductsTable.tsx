@@ -60,6 +60,14 @@ const ProductsTable = ({
     setProducts((prev) => ({ ...prev, [product.id]: product }))
   }
 
+  const removeProductFromProducts = (id: number) => {
+    setProducts((prevProducts) => {
+      const updatedProducts = { ...prevProducts }
+      delete updatedProducts[id]
+      return updatedProducts
+    })
+  }
+
   const handleAddNewProductRow = useCallback(() => {
     setAddingNewProduct(true)
   }, [])
@@ -78,7 +86,8 @@ const ProductsTable = ({
         maxWidth: 1200,
         margin: "0 auto",
         display: "flex",
-        justifyContent: "center",
+        flexDirection: "column",
+        alignItems: "center",
       }}>
       {loadingProducts && <CircularProgress />}
       {productsError && (
@@ -104,6 +113,7 @@ const ProductsTable = ({
             openSignInDialog={openSignInDialog}
             isAddingNewProduct={isAddingNewProduct}
             cancelAddingNewProduct={handleCancelAddingNewProduct}
+            removeProductFromProducts={removeProductFromProducts}
           />
         </Box>
       )}

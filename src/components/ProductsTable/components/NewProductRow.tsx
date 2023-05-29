@@ -16,22 +16,21 @@ import DoneIcon from "@mui/icons-material/Done"
 import ClearIcon from "@mui/icons-material/Clear"
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto"
 import type {
-  NewProduct,
+  AddOrEditProductProps,
   EditedProductInitialValues,
+  NewProduct,
   ProductAction,
 } from "../tableTypes"
 
 interface NewProductRowProps {
   editMode?: boolean
   initialValues?: EditedProductInitialValues
-  submitAdding: (newProduct: NewProduct) => void
-  submitEditing: (newProduct: NewProduct) => void
+  submitAddOrEdit: ({ action, product }: AddOrEditProductProps) => void
   cancelAddOrEditProduct: (action: ProductAction) => void
 }
 
 const NewProductRow = ({
-  submitAdding,
-  submitEditing,
+  submitAddOrEdit,
   cancelAddOrEditProduct,
   editMode = false,
   initialValues,
@@ -52,6 +51,7 @@ const NewProductRow = ({
       setValue("productName", initialValues.title)
       setValue("productDescription", initialValues.description)
       setValue("productPrice", initialValues.price)
+      setValue("productImage", initialValues.image)
       setImagePreview(initialValues.image)
     } else {
       reset()
@@ -64,15 +64,21 @@ const NewProductRow = ({
   ) => {
     const file = data.productImage ? data.productImage[0] : null
     console.log(data, file, imagePreview)
-    const newProduct = {
+    const newProduct: NewProduct = {
       title: data.productName,
       price: parseFloat(data.productPrice).toFixed(2),
       description: data.productDescription,
       image: data.productImage,
     }
-    submitAdding(newProduct)
-    reset()
-    setImagePreview(null)
+    if (editMode) {
+      newProduct.id = initialValues?.id
+      submitAddOrEdit({ action: "edit", product: newProduct })
+      cancelAddOrEditProduct("edit")
+    } else {
+      submitAddOrEdit({ action: "add", product: newProduct })
+      reset()
+      setImagePreview(null)
+    }
   }
 
   const onCancel = () => {
