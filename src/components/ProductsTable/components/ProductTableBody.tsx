@@ -106,7 +106,6 @@ const ProductTableBody = ({
         product.description &&
           newProductData.append("description", product.description)
         product.image && newProductData.append("product_image", product.image)
-        console.log(newProductData)
         axios({
           method: "post",
           headers: {

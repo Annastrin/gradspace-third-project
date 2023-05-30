@@ -52,9 +52,10 @@ const NewProductRow = ({
       setValue("productDescription", initialValues.description)
       setValue("productPrice", initialValues.price)
       setValue("productImage", initialValues.image)
-      setImagePreview(
-        `https://app.spiritx.co.nz/storage/${initialValues.image}`
-      )
+      initialValues.image &&
+        setImagePreview(
+          `https://app.spiritx.co.nz/storage/${initialValues.image}`
+        )
     } else {
       reset()
       setImagePreview(null)
