@@ -33,10 +33,10 @@ const ProductsTable = ({
     axios
       .get<GetProductsResponse>("https://app.spiritx.co.nz/api/products")
       .then((res) => {
-        const productsObj = res.data.reduce((acc, product) => {
+        const productsObj = res.data.reduce<Products>((acc, product) => {
           acc[product.id] = product
           return acc
-        }, {} as Products)
+        }, {})
 
         setProducts(productsObj)
         setProductsError(null)

@@ -1,10 +1,5 @@
-import React, {
-  useState,
-  useCallback,
-  useMemo,
-  ComponentProps,
-  useEffect,
-} from "react"
+import React, { useState, useCallback, useMemo, useEffect } from "react"
+import type { ComponentProps } from "react"
 import axios from "axios"
 import Table from "@mui/material/Table"
 import TableBody from "@mui/material/TableBody"

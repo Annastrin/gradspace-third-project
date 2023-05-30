@@ -1,4 +1,4 @@
-type ProductImageProps = {
+interface ProductImageProps {
   src: string
 }
 

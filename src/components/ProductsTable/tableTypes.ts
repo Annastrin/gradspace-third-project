@@ -53,10 +53,15 @@ export type EditedProductInitialValues = {
 
 export type ProductAction = "edit" | "add"
 
-export interface AddOrEditProductProps {
-  action: ProductAction
-  product: NewProduct
-}
+export type AddOrEditProductProps =
+  | {
+      action: "add"
+      product: NewProduct
+    }
+  | {
+      action: "edit"
+      product: Partial<NewProduct>
+    }
 
 export type ProductToDelete = {
   id: number

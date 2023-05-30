@@ -1,17 +1,12 @@
 import { useEffect, useState } from "react"
-import {
-  useForm,
-  Controller,
-  SubmitHandler,
-  FieldValues,
-} from "react-hook-form"
+import { useForm, Controller } from "react-hook-form"
+import type { SubmitHandler, FieldValues } from "react-hook-form"
 import TableRow from "@mui/material/TableRow"
 import TableCell from "@mui/material/TableCell"
 import TextField from "@mui/material/TextField"
 import InputLabel from "@mui/material/InputLabel"
 import Box from "@mui/material/Box"
 import IconButton from "@mui/material/IconButton"
-import Button from "@mui/material/Button"
 import DoneIcon from "@mui/icons-material/Done"
 import ClearIcon from "@mui/icons-material/Clear"
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto"
@@ -66,7 +61,7 @@ const NewProductRow = ({
     data
   ) => {
     if (editMode) {
-      let newProduct = {} as NewProduct
+      const newProduct: Partial<NewProduct> = {}
       if (data.productName !== initialValues?.title) {
         newProduct.title = data.productName
       }

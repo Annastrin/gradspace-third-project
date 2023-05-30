@@ -21,13 +21,18 @@ const Search = ({ searchQuery, setSearchQuery }: SearchProps) => {
     setSearchQuery(e.target.value)
   }
   return (
-    <form onSubmit={(e) => handleSubmit(e)}>
+    <form
+      onSubmit={(e) => {
+        handleSubmit(e)
+      }}>
       <SearchWrapper>
         <SearchIconWrapper>
           <SearchIcon />
         </SearchIconWrapper>
         <StyledInputBase
-          onChange={(e) => handleChange(e)}
+          onChange={(e) => {
+            handleChange(e)
+          }}
           value={searchState}
           placeholder='Search…'
           inputProps={{ "aria-label": "search" }}

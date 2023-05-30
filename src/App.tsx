@@ -101,7 +101,9 @@ const App = () => {
         handleClose={handleCloseSignInDialog}
         signIn={signIn}
         loginErrors={loginError}
-        closeErrorsAlert={() => setLoginError(null)}
+        closeErrorsAlert={() => {
+          setLoginError(null)
+        }}
       />
       <Snackbar
         open={showLoginSuccess}
