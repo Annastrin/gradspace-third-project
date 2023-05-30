@@ -92,22 +92,34 @@ const ProductTableBody = ({
     ({ action, product }: AddOrEditProductProps) => {
       if (isLoggedIn) {
         const newProductData = new FormData()
+
         if (action === "add") {
           newProductData.append("title", product.title)
           newProductData.append("price", product.price)
           newProductData.append("category_id", "99")
+          newProductData.append("_method", "POST")
         } else {
           product.title && newProductData.append("title", product.title)
           product.price && newProductData.append("price", product.price)
+          newProductData.append("_method", "PUT")
+          // newProductData = {} as NewProduct
+          // if (product.title) {
+          //   newProductData["title"] = product.title
+          // }
+          // if (product.description) {
+          //   newProductData["description"] = product.description
+          // }
+          // if (product.price) {
+          //   newProductData["price"] = product.price
+          // }
+          // if (product.image) {
+          //   newProductData["image"] = product.image
+          // }
         }
         product.description &&
           newProductData.append("description", product.description)
         product.image && newProductData.append("product_image", product.image)
-
-        action === "add"
-          ? newProductData.append("_method", "POST")
-          : newProductData.append("_method", "PUT")
-
+        console.log(newProductData)
         axios({
           method: action === "add" ? "post" : "put",
           headers: {
