@@ -38,7 +38,6 @@ const TableActions = React.memo(
       const wb = read(f) // parse the array buffer
       const ws = wb.Sheets[wb.SheetNames[0]] // get the first worksheet
       const data = utils.sheet_to_json(ws) // generate objects
-      console.log(data)
       data.forEach((entry) => addProductToProducts(entry as Product))
     }
 

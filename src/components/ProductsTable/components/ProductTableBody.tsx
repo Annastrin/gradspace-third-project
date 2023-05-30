@@ -118,7 +118,6 @@ const ProductTableBody = ({
           data: newProductData,
         })
           .then((res) => {
-            console.log(res.data)
             addProductToProducts(res.data)
             setShowMessage(true)
           })
@@ -149,7 +148,6 @@ const ProductTableBody = ({
 
   const deleteProduct = (id: number) => {
     if (isLoggedIn) {
-      console.log("try to delete a product")
       axios({
         method: "delete",
         headers: {
@@ -160,7 +158,6 @@ const ProductTableBody = ({
         .then((res) => {
           removeProductFromProducts(id)
           setShowConfirmDelete(false)
-          console.log(res.data, "product deleted")
         })
         .catch((err) => {
           if (axios.isAxiosError(err)) {

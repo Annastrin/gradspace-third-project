@@ -33,7 +33,6 @@ const App = () => {
 
     const tokenItem = JSON.parse(tokenItemData)
     const now = new Date()
-    console.log(tokenItem.token, now, tokenItem.expiryDate)
     if (now > tokenItem.expiryDate) {
       localStorage.removeItem("productTableAuth")
       return
@@ -53,7 +52,6 @@ const App = () => {
         setOpenSignIn(false)
         setShowLoginSuccess(true)
         setLoggedIn(true)
-        console.log(res.data, token)
       })
       .catch((err) => {
         if (axios.isAxiosError(err)) {

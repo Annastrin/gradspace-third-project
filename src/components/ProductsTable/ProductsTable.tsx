@@ -38,9 +38,7 @@ const ProductsTable = ({
           return acc
         }, {} as Products)
 
-        console.log(res.data, productsObj)
         setProducts(productsObj)
-
         setProductsError(null)
       })
       .catch((err) => {

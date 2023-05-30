@@ -65,9 +65,6 @@ const NewProductRow = ({
   const onSubmit: SubmitHandler<FormInput> & SubmitHandler<FieldValues> = (
     data
   ) => {
-    const file = data.productImage ? data.productImage[0] : null
-    console.log({ data, file, imagePreview })
-
     if (editMode) {
       let newProduct = {} as NewProduct
       if (data.productName !== initialValues?.title) {
@@ -111,7 +108,6 @@ const NewProductRow = ({
   const getImagePreviewUrl = (file: File | null) => {
     if (file) {
       const previewUrl = window.URL.createObjectURL(file)
-      console.log(file, previewUrl)
       setImagePreview(previewUrl)
     } else {
       setImagePreview(null)
