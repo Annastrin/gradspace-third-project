@@ -16,6 +16,7 @@ interface TableActionsProps {
   openSignInDialog: () => void
   handleAddNewProductRow: () => void
   products: Products
+  addProductToProducts: (product: Product) => void
 }
 
 const TableActions = React.memo(
@@ -26,17 +27,38 @@ const TableActions = React.memo(
     openSignInDialog,
     handleAddNewProductRow: handleAddNewProduct,
     products,
+    addProductToProducts,
   }: TableActionsProps) => {
     const handleAddNewProductClick = () => {
       isLoggedIn ? handleAddNewProduct() : openSignInDialog()
     }
+
+    const importFile = async (file: File) => {
+      const f = await file.arrayBuffer()
+      const wb = read(f) // parse the array buffer
+      const ws = wb.Sheets[wb.SheetNames[0]] // get the first worksheet
+      const data = utils.sheet_to_json(ws) // generate objects
+      console.log(data)
+      data.forEach((entry) => addProductToProducts(entry as Product))
+    }
+
+    const exportFile = ({ data, fileName }: ExportExcelProps) => {
+      const ws = utils.json_to_sheet(data)
+      const wb = utils.book_new()
+      utils.book_append_sheet(wb, ws, "Data")
+      writeFileXLSX(wb, `${fileName}.xlsx`)
+    }
+
     const handleExportExcel = () => {
       const productsExportData = Object.values(products)
       exportFile({ data: productsExportData, fileName: "Products" })
-      console.log("export", { productsExportData })
     }
+
     return (
-      <Box aria-label='products table actions' mb={3}>
+      <Box
+        aria-label='products table actions'
+        mb={3}
+        sx={{ display: "flex", alignItems: "center" }}>
         {isAddingNewProduct ? (
           <Tooltip title='Cancel adding'>
             <IconButton
@@ -56,11 +78,34 @@ const TableActions = React.memo(
             </IconButton>
           </Tooltip>
         )}
-        <Tooltip title='Import Excel table'>
-          <IconButton sx={{ marginX: "7px" }} aria-label='Import excel table'>
-            <FileDownloadIcon color='primary' sx={{ fontSize: "2.2rem" }} />
-          </IconButton>
-        </Tooltip>
+
+        <label htmlFor='importExcelFile'>
+          <input
+            type='file'
+            accept='.xlsx'
+            id='importExcelFile'
+            name='importExcelFile'
+            style={{ display: "none" }}
+            value=''
+            onChange={(event) => {
+              if (event.target.files) {
+                const addedFile = event.target.files[0]
+                console.log(addedFile)
+                importFile(addedFile)
+              }
+            }}
+          />
+          <Tooltip title='Import Excel table'>
+            <IconButton
+              component='span'
+              sx={{ marginX: "7px" }}
+              aria-label='Import excel table'
+              onClick={(event) => event.stopPropagation()}>
+              <FileDownloadIcon color='primary' sx={{ fontSize: "2.2rem" }} />
+            </IconButton>
+          </Tooltip>
+        </label>
+
         <Tooltip title='Export to Excel table'>
           <IconButton
             sx={{ marginLeft: "7px" }}
@@ -77,13 +122,6 @@ const TableActions = React.memo(
 interface ExportExcelProps {
   data: Product[]
   fileName: string
-}
-
-const exportFile = ({ data, fileName }: ExportExcelProps) => {
-  const ws = utils.json_to_sheet(data)
-  const wb = utils.book_new()
-  utils.book_append_sheet(wb, ws, "Data")
-  writeFileXLSX(wb, `${fileName}.xlsx`)
 }
 
 export default TableActions

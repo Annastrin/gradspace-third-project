@@ -104,6 +104,7 @@ const ProductsTable = ({
             openSignInDialog={openSignInDialog}
             handleAddNewProductRow={handleAddNewProductRow}
             products={products}
+            addProductToProducts={addProductToProducts}
           />
           <ProductTableBody
             products={products}
