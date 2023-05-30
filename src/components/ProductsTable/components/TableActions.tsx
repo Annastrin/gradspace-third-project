@@ -2,6 +2,7 @@ import React from "react"
 import { read, utils, writeFileXLSX } from "xlsx"
 import Box from "@mui/material/Box"
 import IconButton from "@mui/material/IconButton"
+import Tooltip from "@mui/material/Tooltip"
 import AddCircleIcon from "@mui/icons-material/AddCircle"
 import CancelIcon from "@mui/icons-material/Cancel"
 import FileDownloadIcon from "@mui/icons-material/FileDownload"
@@ -37,29 +38,37 @@ const TableActions = React.memo(
     return (
       <Box aria-label='products table actions' mb={3}>
         {isAddingNewProduct ? (
-          <IconButton
-            sx={{ marginRight: "7px" }}
-            onClick={cancelAddingNewProduct}
-            aria-label='cancel adding a new product'>
-            <CancelIcon color='primary' sx={{ fontSize: "2.2rem" }} />
-          </IconButton>
+          <Tooltip title='Cancel adding'>
+            <IconButton
+              sx={{ marginRight: "7px" }}
+              onClick={cancelAddingNewProduct}
+              aria-label='cancel adding a new product'>
+              <CancelIcon color='primary' sx={{ fontSize: "2.2rem" }} />
+            </IconButton>
+          </Tooltip>
         ) : (
-          <IconButton
-            sx={{ marginRight: "7px" }}
-            onClick={handleAddNewProductClick}
-            aria-label='add a new product'>
-            <AddCircleIcon color='primary' sx={{ fontSize: "2.2rem" }} />
-          </IconButton>
+          <Tooltip title='Add new product'>
+            <IconButton
+              sx={{ marginRight: "7px" }}
+              onClick={handleAddNewProductClick}
+              aria-label='add a new product'>
+              <AddCircleIcon color='primary' sx={{ fontSize: "2.2rem" }} />
+            </IconButton>
+          </Tooltip>
         )}
-        <IconButton sx={{ marginX: "7px" }} aria-label='Import excel table'>
-          <FileDownloadIcon color='primary' sx={{ fontSize: "2.2rem" }} />
-        </IconButton>
-        <IconButton
-          sx={{ marginLeft: "7px" }}
-          aria-label='Export excel table'
-          onClick={handleExportExcel}>
-          <FileUploadIcon color='primary' sx={{ fontSize: "2.2rem" }} />
-        </IconButton>
+        <Tooltip title='Import Excel table'>
+          <IconButton sx={{ marginX: "7px" }} aria-label='Import excel table'>
+            <FileDownloadIcon color='primary' sx={{ fontSize: "2.2rem" }} />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title='Export to Excel table'>
+          <IconButton
+            sx={{ marginLeft: "7px" }}
+            aria-label='Export excel table'
+            onClick={handleExportExcel}>
+            <FileUploadIcon color='primary' sx={{ fontSize: "2.2rem" }} />
+          </IconButton>
+        </Tooltip>
       </Box>
     )
   }
