@@ -177,8 +177,11 @@ const ProductTableBody = ({
   }
 
   const openConfirmDeleteDialog = () => {
-    console.log("open delete dialog")
-    setShowConfirmDelete(true)
+    if (isLoggedIn) {
+      setShowConfirmDelete(true)
+    } else {
+      openSignInDialog()
+    }
   }
 
   const closeConfirmDeleteDialog = () => {

@@ -220,9 +220,9 @@ const NewProductRow = ({
                     }
                   }}
                 />
-                <Button component='span'>
+                <IconButton component='span' sx={{ marginX: "10px" }}>
                   <AddAPhotoIcon color='primary' />
-                </Button>
+                </IconButton>
               </InputLabel>
             )}
           />
