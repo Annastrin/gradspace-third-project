@@ -102,26 +102,13 @@ const ProductTableBody = ({
           product.title && newProductData.append("title", product.title)
           product.price && newProductData.append("price", product.price)
           newProductData.append("_method", "PUT")
-          // newProductData = {} as NewProduct
-          // if (product.title) {
-          //   newProductData["title"] = product.title
-          // }
-          // if (product.description) {
-          //   newProductData["description"] = product.description
-          // }
-          // if (product.price) {
-          //   newProductData["price"] = product.price
-          // }
-          // if (product.image) {
-          //   newProductData["image"] = product.image
-          // }
         }
         product.description &&
           newProductData.append("description", product.description)
         product.image && newProductData.append("product_image", product.image)
         console.log(newProductData)
         axios({
-          method: action === "add" ? "post" : "put",
+          method: "post",
           headers: {
             token: loginToken,
           },
