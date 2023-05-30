@@ -103,6 +103,7 @@ const ProductsTable = ({
             isLoggedIn={isLoggedIn}
             openSignInDialog={openSignInDialog}
             handleAddNewProductRow={handleAddNewProductRow}
+            products={products}
           />
           <ProductTableBody
             products={products}
