@@ -84,6 +84,7 @@ const App = () => {
       />
       <Box
         mt={4}
+        mb={6}
         sx={{
           display: "flex",
           justifyContent: "center",
