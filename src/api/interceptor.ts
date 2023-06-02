@@ -35,7 +35,7 @@ const onRequest = (
 
 const onRequestError = (error: AxiosError | Error) => {
   console.log(error)
-  return error
+  return Promise.reject(error)
 }
 
 const onResponse = (response: AxiosResponse) => {
@@ -44,5 +44,5 @@ const onResponse = (response: AxiosResponse) => {
 
 const onResponseError = (error: AxiosError | Error) => {
   console.log(error)
-  return error
+  return Promise.reject(error)
 }

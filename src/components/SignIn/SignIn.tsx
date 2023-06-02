@@ -39,12 +39,7 @@ const SignIn = () => {
         login({ token, userEmail })
       })
       .catch((err) => {
-        if (axios.isAxiosError(err)) {
-          console.log(err)
-          setShowLoginErrors(err.message)
-        } else {
-          console.log("An unexpected error occurred on logging in")
-        }
+        setShowLoginErrors(err.message)
       })
   }
 
