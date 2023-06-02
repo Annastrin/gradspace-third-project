@@ -7,13 +7,11 @@ import AddCircleIcon from "@mui/icons-material/AddCircle"
 import CancelIcon from "@mui/icons-material/Cancel"
 import FileDownloadIcon from "@mui/icons-material/FileDownload"
 import FileUploadIcon from "@mui/icons-material/FileUpload"
-import type { Product, Products } from "../tableTypes"
+import type { Product, Products } from "../../../types"
 
 interface TableActionsProps {
   isAddingNewProduct: boolean
   cancelAddingNewProduct: () => void
-  isLoggedIn: boolean
-  openSignInDialog: () => void
   handleAddNewProductRow: () => void
   products: Products
   addProductToProducts: (product: Product) => void
@@ -23,14 +21,12 @@ const TableActions = React.memo(
   ({
     isAddingNewProduct,
     cancelAddingNewProduct,
-    isLoggedIn,
-    openSignInDialog,
     handleAddNewProductRow: handleAddNewProduct,
     products,
     addProductToProducts,
   }: TableActionsProps) => {
     const handleAddNewProductClick = () => {
-      isLoggedIn ? handleAddNewProduct() : openSignInDialog()
+      handleAddNewProduct()
     }
 
     const importFile = async (file: File) => {

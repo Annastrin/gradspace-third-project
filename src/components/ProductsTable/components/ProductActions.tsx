@@ -2,7 +2,7 @@ import Box from "@mui/material/Box"
 import IconButton from "@mui/material/IconButton"
 import EditIcon from "@mui/icons-material/Edit"
 import DeleteIcon from "@mui/icons-material/Delete"
-import type { ProductToDelete } from "../tableTypes"
+import type { ProductToDelete } from "../../../types"
 
 interface ProductActionsProps {
   title: string

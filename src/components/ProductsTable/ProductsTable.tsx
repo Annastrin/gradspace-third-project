@@ -5,21 +5,14 @@ import CircularProgress from "@mui/material/CircularProgress"
 import Alert from "@mui/material/Alert"
 import TableActions from "./components/TableActions"
 import ProductTableBody from "./components/ProductTableBody"
-import type { GetProductsResponse, Product, Products } from "./tableTypes"
+import { apiGet } from "../../api/service"
+import type { Product, Products } from "../../types"
 
 interface ProductsTableProps {
   searchQuery: string
-  isLoggedIn: boolean
-  loginToken: string | null
-  openSignInDialog: () => void
 }
 
-const ProductsTable = ({
-  searchQuery,
-  isLoggedIn,
-  loginToken,
-  openSignInDialog,
-}: ProductsTableProps) => {
+const ProductsTable = ({ searchQuery }: ProductsTableProps) => {
   const [products, setProducts] = useState<Products>({})
   const [loadingProducts, setLoadingProducts] = useState(true)
   const [productsError, setProductsError] = useState<string | null>(null)
@@ -30,14 +23,15 @@ const ProductsTable = ({
   }, [])
 
   const getData = () => {
-    axios
-      .get<GetProductsResponse>("https://app.spiritx.co.nz/api/products")
+    apiGet("products")
       .then((res) => {
-        const productsObj = res.data.reduce<Products>((acc, product) => {
-          acc[product.id] = product
-          return acc
-        }, {})
-
+        const productsObj = res.data.reduce(
+          (acc: Products, product: Product) => {
+            acc[product.id] = product
+            return acc
+          },
+          {}
+        )
         setProducts(productsObj)
         setProductsError(null)
       })
@@ -74,9 +68,6 @@ const ProductsTable = ({
     setAddingNewProduct(false)
   }, [])
 
-  // Avoid a layout jump when reaching the last page with empty rows.
-  // const productsArr = Object.values(products)
-
   return (
     <Box
       sx={{
@@ -98,8 +89,6 @@ const ProductsTable = ({
           <TableActions
             isAddingNewProduct={isAddingNewProduct}
             cancelAddingNewProduct={handleCancelAddingNewProduct}
-            isLoggedIn={isLoggedIn}
-            openSignInDialog={openSignInDialog}
             handleAddNewProductRow={handleAddNewProductRow}
             products={products}
             addProductToProducts={addProductToProducts}
@@ -108,9 +97,6 @@ const ProductsTable = ({
             products={products}
             searchQuery={searchQuery}
             addProductToProducts={addProductToProducts}
-            isLoggedIn={isLoggedIn}
-            loginToken={loginToken}
-            openSignInDialog={openSignInDialog}
             isAddingNewProduct={isAddingNewProduct}
             cancelAddingNewProduct={handleCancelAddingNewProduct}
             removeProductFromProducts={removeProductFromProducts}

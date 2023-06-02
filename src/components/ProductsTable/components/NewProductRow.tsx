@@ -15,7 +15,7 @@ import type {
   EditedProductInitialValues,
   NewProduct,
   ProductAction,
-} from "../tableTypes"
+} from "../../../types"
 
 interface NewProductRowProps {
   editMode?: boolean
@@ -75,7 +75,6 @@ const NewProductRow = ({
         newProduct.image = data.productImage
       }
       newProduct.id = initialValues?.id
-      console.log(newProduct)
       submitAddOrEdit({ action: "edit", product: newProduct })
       cancelAddOrEditProduct("edit")
     } else {

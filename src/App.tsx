@@ -1,138 +1,37 @@
-import { useState, useEffect } from "react"
-import axios from "axios"
-import Box from "@mui/material/Box"
-import Snackbar from "@mui/material/Snackbar"
-import Alert from "@mui/material/Alert"
-import Navbar from "./components/Navbar/Navbar"
-import ProductsTable from "./components/ProductsTable/ProductsTable"
-import SignIn from "./components/SignIn/SignIn"
+import {
+  RouterProvider,
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+} from "react-router-dom"
+import HomePage from "./pages/HomePage"
+import LoginPage from "./pages/LoginPage"
+import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute"
+import AuthLayout from "./components/AuthLayout/AuthLayout"
+
 import "@fontsource/roboto/300.css"
 import "@fontsource/roboto/400.css"
 import "@fontsource/roboto/500.css"
 import "@fontsource/roboto/700.css"
 
 const App = () => {
-  const [loginToken, setLoginToken] = useState<string | null>(null)
-  const [loginError, setLoginError] = useState<string | null>(null)
-  const [showLoginSuccess, setShowLoginSuccess] = useState(false)
-  const [isLoggedIn, setLoggedIn] = useState(false)
-  const [openSignIn, setOpenSignIn] = useState(false)
-  const [searchQuery, setSearchQuery] = useState("")
-
-  useEffect(() => {
-    getLoginToken()
-  }, [])
-
-  const getLoginToken = () => {
-    const tokenItemData = localStorage.getItem("productTableAuth")
-    if (!tokenItemData) {
-      console.log("no saved token item")
-      setLoginToken(null)
-      return
-    }
-
-    const tokenItem = JSON.parse(tokenItemData)
-    const now = new Date()
-    if (now > tokenItem.expiryDate) {
-      localStorage.removeItem("productTableAuth")
-      return
-    }
-    setLoginToken(tokenItem.token)
-    setLoggedIn(true)
-  }
-
-  const signIn = (email: string, password: string) => {
-    axios
-      .post("https://app.spiritx.co.nz/api/login", { email, password })
-      .then((res) => {
-        const token = res.data.token.token
-        setLoginError(null)
-        setLoginToken(token)
-        saveToLocalStorage(token)
-        setOpenSignIn(false)
-        setShowLoginSuccess(true)
-        setLoggedIn(true)
-      })
-      .catch((err) => {
-        if (axios.isAxiosError(err)) {
-          setLoginError(err.message)
-        } else {
-          setLoginError("An unexpected error occurred on logging in")
-        }
-      })
-  }
-
-  const handleOpenSignInDialog = () => {
-    setOpenSignIn(true)
-  }
-
-  const handleCloseSignInDialog = () => {
-    setOpenSignIn(false)
-  }
-
-  const handleCloseLoginSuccess = () => {
-    setShowLoginSuccess(false)
-  }
-
-  return (
-    <>
-      <Navbar
-        handleSignInClick={handleOpenSignInDialog}
-        isLoggedIn={isLoggedIn}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-      />
-      <Box
-        mt={4}
-        mb={6}
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          paddingX: { xs: "16px", sm: "24px" },
-        }}>
-        <ProductsTable
-          searchQuery={searchQuery}
-          isLoggedIn={isLoggedIn}
-          loginToken={loginToken}
-          openSignInDialog={handleOpenSignInDialog}
+  const appRouter = createBrowserRouter(
+    createRoutesFromElements(
+      <Route path='/' element={<AuthLayout />}>
+        <Route
+          path=''
+          element={
+            <ProtectedRoute>
+              <HomePage />
+            </ProtectedRoute>
+          }
         />
-      </Box>
-      <SignIn
-        open={openSignIn}
-        handleClose={handleCloseSignInDialog}
-        signIn={signIn}
-        loginErrors={loginError}
-        closeErrorsAlert={() => {
-          setLoginError(null)
-        }}
-      />
-      <Snackbar
-        open={showLoginSuccess}
-        autoHideDuration={3000}
-        onClose={handleCloseLoginSuccess}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}>
-        <Alert
-          variant='filled'
-          onClose={handleCloseLoginSuccess}
-          severity='success'
-          sx={{ width: "100%" }}>
-          You're logged in!
-        </Alert>
-      </Snackbar>
-    </>
+        <Route path='login' element={<LoginPage />} />
+      </Route>
+    ),
+    { basename: `${process.env.PUBLIC_URL}` }
   )
-}
-
-function saveToLocalStorage(token: string) {
-  const now = new Date()
-  const expiryDate = new Date()
-  expiryDate.setDate(now.getDate() + 10)
-
-  const item = {
-    token: token,
-    expiryDate: expiryDate,
-  }
-  localStorage.setItem("productTableAuth", JSON.stringify(item))
+  return <RouterProvider router={appRouter} />
 }
 
 export default App

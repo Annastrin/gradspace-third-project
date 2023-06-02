@@ -2,7 +2,7 @@ import TableCell from "@mui/material/TableCell"
 import TableRow from "@mui/material/TableRow"
 import NewProductRow from "./NewProductRow"
 import ProductImage from "./ProductImage"
-import type { ProductAction, Data, AddOrEditProductProps } from "../tableTypes"
+import type { ProductAction, Data, AddOrEditProductProps } from "../../../types"
 
 interface ProductTableRowProps {
   row: Data

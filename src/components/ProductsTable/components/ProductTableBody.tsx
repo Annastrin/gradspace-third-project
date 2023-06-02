@@ -15,6 +15,7 @@ import ProductActions from "./ProductActions"
 import NewProductRow from "./NewProductRow"
 import ProductTableRow from "./ProductTableRow"
 import ConfirmDeleteDialog from "../../ConfirmDeleteDialog/ConfirmDeleteDialog"
+import { apiPost, apiPut, apiDelete } from "../../../api/service"
 import type {
   Product,
   Data,
@@ -24,15 +25,12 @@ import type {
   Products,
   AddOrEditProductProps,
   ProductToDelete,
-} from "../tableTypes"
+} from "../../../types"
 
 interface ProductTableBodyProps {
   products: Products
   searchQuery: string
   addProductToProducts: (product: Product) => void
-  isLoggedIn: boolean
-  loginToken: string | null
-  openSignInDialog: () => void
   isAddingNewProduct: boolean
   cancelAddingNewProduct: () => void
   removeProductFromProducts: (id: number) => void
@@ -42,9 +40,6 @@ const ProductTableBody = ({
   products,
   searchQuery,
   addProductToProducts,
-  isLoggedIn,
-  loginToken,
-  openSignInDialog,
   isAddingNewProduct,
   cancelAddingNewProduct,
   removeProductFromProducts,
@@ -57,6 +52,7 @@ const ProductTableBody = ({
   const [showConfirmDelete, setShowConfirmDelete] = useState(false)
   const [productToDelete, setProductToDelete] = useState({} as ProductToDelete)
   const [showMessage, setShowMessage] = useState(false)
+  const [messageText, setMessageText] = useState("")
 
   useEffect(() => {
     setPage(0)
@@ -85,77 +81,39 @@ const ProductTableBody = ({
 
   const submitAddOrEdit = useCallback(
     ({ action, product }: AddOrEditProductProps) => {
-      if (isLoggedIn) {
-        const newProductData = new FormData()
+      const newProductData = new FormData()
 
-        if (action === "add") {
-          newProductData.append("title", product.title)
-          newProductData.append("price", product.price)
-          newProductData.append("category_id", "99")
-          newProductData.append("_method", "POST")
-        } else {
-          product.title && newProductData.append("title", product.title)
-          product.price && newProductData.append("price", product.price)
-          newProductData.append("_method", "PUT")
-        }
-        product.description &&
-          newProductData.append("description", product.description)
-        product.image && newProductData.append("product_image", product.image)
-        axios({
-          method: "post",
-          headers: {
-            token: loginToken,
-          },
-          url:
-            action === "add"
-              ? "https://app.spiritx.co.nz/api/products"
-              : `https://app.spiritx.co.nz/api/product/${product.id}`,
-          data: newProductData,
-        })
-          .then((res) => {
-            addProductToProducts(res.data)
-            setShowMessage(true)
-          })
-          .catch((err) => {
-            if (axios.isAxiosError(err)) {
-              console.log(err.message)
-            } else {
-              console.log(
-                "An unexpected error occurred on adding or editing a new product"
-              )
-            }
-          })
-      } else {
-        openSignInDialog()
+      if (action === "add") {
+        newProductData.append("title", product.title)
+        newProductData.append("price", product.price)
+        newProductData.append("category_id", "99")
+        newProductData.append("_method", "POST")
+      } else if (action === "edit") {
+        product.title && newProductData.append("title", product.title)
+        product.price && newProductData.append("price", product.price)
+        newProductData.append("_method", "PUT")
       }
-    },
-    [isLoggedIn]
-  )
+      product.description &&
+        newProductData.append("description", product.description)
+      product.image && newProductData.append("product_image", product.image)
 
-  const cancelAddOrEditProduct = useCallback((action: ProductAction) => {
-    if (action === "add") {
-      cancelAddingNewProduct()
-    }
-    if (action === "edit") {
-      setRowToEdit(null)
-    }
-  }, [])
+      const apiPart =
+        action === "add"
+          ? apiPost("products", newProductData)
+          : apiPut(`product/${product.id}`, newProductData)
 
-  const deleteProduct = (id: number) => {
-    if (isLoggedIn) {
-      axios({
-        method: "delete",
-        headers: {
-          token: loginToken,
-        },
-        url: `https://app.spiritx.co.nz/api/product/${id}`,
-      })
+      apiPart
         .then((res) => {
-          removeProductFromProducts(id)
-          setShowConfirmDelete(false)
+          addProductToProducts(res.data)
+          action === "add"
+            ? setMessageText("The product was added!")
+            : setMessageText("The product was updated!")
+          setShowMessage(true)
         })
         .catch((err) => {
           if (axios.isAxiosError(err)) {
+            setMessageText(err.message)
+            setShowMessage(true)
             console.log(err.message)
           } else {
             console.log(
@@ -163,17 +121,45 @@ const ProductTableBody = ({
             )
           }
         })
-    } else {
-      openSignInDialog()
-    }
+    },
+    [addProductToProducts]
+  )
+
+  const cancelAddOrEditProduct = useCallback(
+    (action: ProductAction) => {
+      if (action === "add") {
+        cancelAddingNewProduct()
+      }
+      if (action === "edit") {
+        setRowToEdit(null)
+      }
+    },
+    [cancelAddingNewProduct]
+  )
+
+  const deleteProduct = (id: number) => {
+    apiDelete(`product/${id}`)
+      .then((res) => {
+        removeProductFromProducts(id)
+        setShowConfirmDelete(false)
+        setMessageText("The product was deleted!")
+        setShowMessage(true)
+      })
+      .catch((err) => {
+        if (axios.isAxiosError(err)) {
+          console.log(err.message)
+          setMessageText(err.message)
+          setShowMessage(true)
+        } else {
+          console.log(
+            "An unexpected error occurred on adding or editing a new product"
+          )
+        }
+      })
   }
 
   const openConfirmDeleteDialog = () => {
-    if (isLoggedIn) {
-      setShowConfirmDelete(true)
-    } else {
-      openSignInDialog()
-    }
+    setShowConfirmDelete(true)
   }
 
   const closeConfirmDeleteDialog = () => {
@@ -220,7 +206,7 @@ const ProductTableBody = ({
       productsToShow,
       getComparator<keyof SortableData>(order, orderBy)
     ).slice(validPage * rowsPerPage, validPage * rowsPerPage + rowsPerPage)
-  }, [order, orderBy, validPage, rowsPerPage, productsToShow, searchQuery])
+  }, [order, orderBy, validPage, rowsPerPage, productsToShow])
 
   return (
     <Paper sx={{ width: "100%", maxWidth: 1200, margin: "0 auto", mb: 2 }}>
@@ -292,7 +278,7 @@ const ProductTableBody = ({
           onClose={() => setShowMessage(false)}
           severity='success'
           sx={{ width: "100%" }}>
-          The product was added or updated!
+          {messageText}
         </Alert>
       </Snackbar>
       <ConfirmDeleteDialog

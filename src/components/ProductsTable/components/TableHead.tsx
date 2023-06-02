@@ -4,7 +4,7 @@ import TableHead from "@mui/material/TableHead"
 import TableRow from "@mui/material/TableRow"
 import TableSortLabel from "@mui/material/TableSortLabel"
 import { visuallyHidden } from "@mui/utils"
-import { SortableData, Order } from "../tableTypes"
+import { SortableData, Order } from "../../../types"
 import React from "react"
 
 interface EnhancedTableProps {

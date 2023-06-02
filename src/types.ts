@@ -1,3 +1,13 @@
+export type SendUserData = {
+  email: string
+  password: string
+}
+
+export type UserData = {
+  userEmail: string
+  token: string
+} | null
+
 export interface Data {
   id: number
   title: string
