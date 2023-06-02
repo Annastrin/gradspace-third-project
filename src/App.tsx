@@ -4,6 +4,7 @@ import {
   createRoutesFromElements,
   Route,
 } from "react-router-dom"
+import Typography from "@mui/material/Typography"
 import HomePage from "./pages/HomePage"
 import LoginPage from "./pages/LoginPage"
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute"
@@ -27,6 +28,14 @@ const App = () => {
           }
         />
         <Route path='login' element={<LoginPage />} />
+        <Route
+          path='*'
+          element={
+            <Typography variant='h4' component='h2' align='center'>
+              Page not found
+            </Typography>
+          }
+        />
       </Route>
     ),
     { basename: `${process.env.PUBLIC_URL}` }
