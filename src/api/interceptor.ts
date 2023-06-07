@@ -27,7 +27,7 @@ const onRequest = (
       const parsedValue = JSON.parse(userData)
       const userToken = parsedValue.token
 
-      config.headers.set("token", userToken)
+      config.headers.set("Authorization", `Bearer ${userToken}`)
     }
   }
   return config

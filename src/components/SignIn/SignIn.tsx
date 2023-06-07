@@ -33,7 +33,7 @@ const SignIn = () => {
   const signIn = (email: string, password: string) => {
     apiLogin("login", { email, password })
       .then((res) => {
-        const token = res.data.token.token
+        const token = res.data.token
         const userEmail = res.data.user.email
         login({ token, userEmail })
       })
