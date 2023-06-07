@@ -224,6 +224,7 @@ const ProductTableBody = ({
           <TableBody>
             {isAddingNewProduct && (
               <NewProductRow
+                key='new-product'
                 submitAddOrEdit={submitAddOrEdit}
                 cancelAddOrEditProduct={cancelAddOrEditProduct}
               />

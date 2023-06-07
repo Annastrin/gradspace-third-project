@@ -191,12 +191,12 @@ const NewProductRow = ({
             control={control}
             defaultValue={null}
             render={({ field: { value, onChange, ...field } }) => (
-              <InputLabel htmlFor='uploadPicture'>
+              <InputLabel htmlFor={`uploadPicture-${initialValues?.id}`}>
                 <input
                   {...field}
                   type='file'
                   accept='image/*'
-                  id='uploadPicture'
+                  id={`uploadPicture-${initialValues?.id}`}
                   name='uploadPicture'
                   style={{ display: "none" }}
                   onChange={(event) => {
