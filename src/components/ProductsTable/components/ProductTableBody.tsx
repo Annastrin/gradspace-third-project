@@ -95,7 +95,7 @@ const ProductTableBody = ({
       }
       product.description &&
         newProductData.append("description", product.description)
-      product.image && newProductData.append("product_image", product.image)
+      product.image && newProductData.append("image", product.image)
 
       const apiPart =
         action === "add"
@@ -182,7 +182,7 @@ const ProductTableBody = ({
         title: product.title,
         description: product.description ?? "",
         price: parseFloat(product.price),
-        image: product.product_image,
+        image: product.image,
         actions: (
           <ProductActions
             title={product.title}

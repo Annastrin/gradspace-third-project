@@ -16,6 +16,7 @@ import type {
   NewProduct,
   ProductAction,
 } from "../../../types"
+import { BaseStorageUrl } from "../../../environment"
 
 interface NewProductRowProps {
   editMode?: boolean
@@ -48,9 +49,7 @@ const NewProductRow = ({
       setValue("productPrice", initialValues.price)
       setValue("productImage", initialValues.image)
       initialValues.image &&
-        setImagePreview(
-          `https://app.spiritx.co.nz/storage/${initialValues.image}`
-        )
+        setImagePreview(`${BaseStorageUrl}${initialValues.image}`)
     } else {
       reset()
       setImagePreview(null)

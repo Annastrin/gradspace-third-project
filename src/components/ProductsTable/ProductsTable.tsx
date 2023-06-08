@@ -25,6 +25,7 @@ const ProductsTable = ({ searchQuery }: ProductsTableProps) => {
   const getData = () => {
     apiGet("products")
       .then((res) => {
+        console.log(res.data)
         const productsObj = res.data.reduce(
           (acc: Products, product: Product) => {
             acc[product.id] = product

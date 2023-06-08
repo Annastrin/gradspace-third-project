@@ -32,7 +32,7 @@ export type Product = {
   title: string
   description: string | null
   price: string
-  product_image: string
+  image: string
   is_active: null
   created_at: string
   updated_at: string
