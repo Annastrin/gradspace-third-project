@@ -78,7 +78,7 @@ const NewProductRow = ({
       submitAddOrEdit({ action: "edit", product: newProduct })
       cancelAddOrEditProduct("edit")
     } else {
-      let newProduct: NewProduct = {
+      const newProduct: NewProduct = {
         title: data.productName,
         price: parseFloat(data.productPrice).toFixed(2),
         description: data.productDescription,

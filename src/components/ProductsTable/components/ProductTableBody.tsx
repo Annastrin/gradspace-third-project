@@ -9,7 +9,7 @@ import TablePagination from "@mui/material/TablePagination"
 import TableRow from "@mui/material/TableRow"
 import Paper from "@mui/material/Paper"
 import Snackbar from "@mui/material/Snackbar"
-import Alert from "@mui/material/Alert"
+import Alert, { AlertColor } from "@mui/material/Alert"
 import EnhancedTableHead from "./TableHead"
 import ProductActions from "./ProductActions"
 import NewProductRow from "./NewProductRow"
@@ -53,6 +53,9 @@ const ProductTableBody = ({
   const [productToDelete, setProductToDelete] = useState({} as ProductToDelete)
   const [showMessage, setShowMessage] = useState(false)
   const [messageText, setMessageText] = useState("")
+  const [messageState, setMessageState] = useState<AlertColor | undefined>(
+    "success"
+  )
 
   useEffect(() => {
     setPage(0)
@@ -108,11 +111,13 @@ const ProductTableBody = ({
           action === "add"
             ? setMessageText("The product was added!")
             : setMessageText("The product was updated!")
+          setMessageState("success")
           setShowMessage(true)
         })
         .catch((err) => {
           if (axios.isAxiosError(err)) {
             setMessageText(err.message)
+            setMessageState("error")
             setShowMessage(true)
             console.log(err.message)
           } else {
@@ -143,12 +148,14 @@ const ProductTableBody = ({
         removeProductFromProducts(id)
         setShowConfirmDelete(false)
         setMessageText("The product was deleted!")
+        setMessageState("success")
         setShowMessage(true)
       })
       .catch((err) => {
         if (axios.isAxiosError(err)) {
           console.log(err.message)
           setMessageText(err.message)
+          setMessageState("error")
           setShowMessage(true)
         } else {
           console.log(
@@ -277,7 +284,7 @@ const ProductTableBody = ({
         <Alert
           variant='filled'
           onClose={() => setShowMessage(false)}
-          severity='success'
+          severity={messageState}
           sx={{ width: "100%" }}>
           {messageText}
         </Alert>
