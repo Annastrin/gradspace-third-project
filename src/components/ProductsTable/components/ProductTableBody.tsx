@@ -96,7 +96,7 @@ const ProductTableBody = ({
         product.price && newProductData.append("price", product.price)
         newProductData.append("_method", "PUT")
       }
-      product.description &&
+      product.description !== undefined &&
         newProductData.append("description", product.description)
       product.image && newProductData.append("image", product.image)
 
