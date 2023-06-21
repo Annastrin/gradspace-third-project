@@ -103,7 +103,7 @@ const ProductTableBody = ({
       const apiPart =
         action === "add"
           ? apiPost("products", newProductData)
-          : apiPut(`product/${product.id}`, newProductData)
+          : apiPut(`products/${product.id}`, newProductData)
 
       apiPart
         .then((res) => {
@@ -143,7 +143,7 @@ const ProductTableBody = ({
   )
 
   const deleteProduct = (id: number) => {
-    apiDelete(`product/${id}`)
+    apiDelete(`products/${id}`)
       .then((res) => {
         removeProductFromProducts(id)
         setShowConfirmDelete(false)

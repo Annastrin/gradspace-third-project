@@ -13,6 +13,6 @@ export const apiPost = async (path: string, data: FormData) =>
   axiosInstance.post(`${path}`, data)
 
 export const apiPut = async (path: string, data: FormData) =>
-  axiosInstance.post(`${path}`, data)
+  axiosInstance.put(`${path}`, data)
 
 export const apiDelete = async (path: string) => axiosInstance.delete(`${path}`)
